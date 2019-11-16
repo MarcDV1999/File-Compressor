@@ -4,13 +4,15 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BitWritter {
-
+public class BinFile {
+    private String binFileName;
     private int bitsPointer;
     private int bitsUltimoChar = 8;
     private int bitsHeader = 16;
 
-
+    public BinFile(String name){
+        this.binFileName = name + ".bin";
+    }
     // Lee el Fichero Comprimido y retorna el texto decodificado
     public List<String> readBinFile(String binFile) throws IOException {
         //boolean[] ArrayHeader = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
@@ -95,7 +97,7 @@ public class BitWritter {
     }
 
     // Codifica el texto eficientemente en binario
-    public void writeEfficient(List textCodifiedASCII, String writeFileNameE, int numFrases) throws IOException{ // Se adapta a los bits que necesita cada cosa
+    public void writeBinFile(List textCodifiedASCII, String writeFileNameE, int numFrases) throws IOException{ // Se adapta a los bits que necesita cada cosa
         FileOutputStream out = new FileOutputStream(writeFileNameE);
         bitsPointer = Math.max((int)Math.ceil((Math.log(numFrases)/Math.log(2))),2);
         //System.out.println("Bits necesaris " + bitsPointer);
@@ -259,6 +261,8 @@ public class BitWritter {
         }
         return decimal;
     }
+
+    public String getBinFileName(){return binFileName;}
 
 
 }

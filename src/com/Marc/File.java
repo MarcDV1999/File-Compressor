@@ -3,13 +3,13 @@ package com.Marc;
 import java.io.*;
 
 public class File {
-    String textFileName, binFileName;
+    protected String textFileName;
 
     public File(String name){
         this.textFileName = name + ".txt";
-        this.binFileName = name + ".txt";
+
     }
-/*
+
     public String readFile(String fileName) throws IOException {
         InputStream is = new FileInputStream(fileName);
         BufferedReader buf = new BufferedReader(new InputStreamReader(is));
@@ -36,10 +36,8 @@ public class File {
         return textFileName;
     }
 
-    public  String getBinFileName(){
-        return binFileName;
-    }
-    */
+
+
 
 
 }
