@@ -18,28 +18,31 @@ package com.Marc;
             -> Només hi ha pointers
                 -> Apunten a substring previament parsejats
 
+    UML:Controlador -> On poso les funcionalitats mes especifiques de la clase
+    UML:CLase -> Poso les funcionalitats que necessitare sempre
+    Driver -> Per testejar la classe, fem un menu interactiu pel terminal on puguis provar tots els
+                metodes i que es vegi com queda la cosa
+
+
  */
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
+
+
 import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) throws IOException {
 	// write your code here
-        String fileName = "FitxerDeText.txt";
-        String s = "ABABCBABABAAA";
-        String a = "Hola me llamo Marc";
+        String name = "FitxerDeText";
+        //String s = "ABABCBABABAAA";
 
-        LZ78 lz78 = new LZ78(fileName);
-        lz78.codify();
+        LZ78 lz78 = new LZ78(name);
         //lz78.print();
-        lz78.compress();
-        //lz78.writeFile2();
-        //BitWritter b = new BitWritter();
+        lz78.compress(name);
+        lz78.discompress(name);
+
 
     }
 }
