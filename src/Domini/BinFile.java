@@ -1,25 +1,28 @@
-package com.Marc;
+package Domini;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BinFile {
+public class BinFile extends File {
     private String binFileName;
     private int bitsPointer;
     private int bitsUltimoChar = 8;
     private int bitsHeader = 16;
 
     public BinFile(String name){
+        super(name);
         this.binFileName = name + ".bin";
     }
-    // Lee el Fichero Comprimido y retorna el texto decodificado
-    public List<String> readBinFile(String binFile) throws IOException {
+
+    // Lee el Fichero Comprimido binFile y retorna el texto decodificado en una lista de Strings
+    public List<String> readBinFile() throws IOException {
         //boolean[] ArrayHeader = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
         List<String> text = new ArrayList<>();
         //System.out.println("bitspointer " + bitsPointer);
         //String text = "";
-        FileInputStream in = new FileInputStream(binFile);
+        //System.out.println("hey1");
+        FileInputStream in = new FileInputStream(binFileName);
 
         ArrayList<Boolean> b = new ArrayList<>();
         ArrayList<Boolean> ArrayUltimoChar = new ArrayList<>(bitsUltimoChar);
@@ -27,28 +30,38 @@ public class BinFile {
         ArrayList<Boolean> ArrayHeader = new ArrayList<>(bitsHeader);
         int ultimPointer = 0, ultimChar = 0;
 
+        for (int i = 0; i < bitsHeader; i++)ArrayHeader.add(false);
+        readBooleans(in,ArrayHeader);
+
+        bitsPointer = getDecimalNumber(ArrayHeader);
+        //System.out.println("Bitspointer: " + ArrayHeader);
+
         // Inicializamos los Arrays
         for (int i = 0; i < bitsPointer; i++)ArrayPointer.add(false);
         for (int i = 0; i < bitsUltimoChar; i++)ArrayUltimoChar.add(false);
-        for (int i = 0; i < bitsHeader; i++)ArrayHeader.add(false);
         for (int i = 0; i < 8; i++)b.add(false);
 
-        readBooleans(in,ArrayHeader);
-        //System.out.println("Array Header: " + ArrayHeader);
+
+
+        //System.out.println("Array Pointer: " + ArrayPointer);
         //printBoolean(ArrayHeader);
-        bitsPointer = obtenerDecimal(ArrayHeader);
+
         //System.out.println("BIts: " + bitsPointer);
 
-
+        //System.out.println("hey3");
         // Mientras haya texto por leer vamos cogiendo bits, vamos decodificando y guardando en text
         while (!readBooleans(in, b)){
+            //System.out.println("hey4");
             for (Boolean aBoolean : b) {
+                //System.out.println("hey5");
                 try {
-                    //System.out.println("\tProceso: " + b.get(i));
+                    //System.out.println("\tProceso: " + aBoolean);
                     //System.out.println("\tProceso: ");
+                    //System.out.println("hey10");
                     if (ultimPointer == bitsPointer && ultimChar == bitsUltimoChar) {
                         //System.out.println("Guardamos en Text");
-                        int d1 = obtenerDecimal(ArrayPointer), d2 = obtenerDecimal(ArrayUltimoChar);
+                        //System.out.println("hey7");
+                        int d1 = getDecimalNumber(ArrayPointer), d2 = getDecimalNumber(ArrayUltimoChar);
                         //char s = (char)d2;
                         //text += d1; text += s;
                         Character s = (char) d2;
@@ -61,18 +74,22 @@ public class BinFile {
                         ultimPointer = ultimChar = 0;
                     }
                     if (ultimPointer < bitsPointer) {
-                        //System.out.println("\t\tPointer: " + b.get(i));
+                        //System.out.println("hey8");
+                        //System.out.println("\t\tPointer: " + ArrayPointer);
                         ArrayPointer.set(ultimPointer, aBoolean);
+                        //System.out.println("hey9");
                         ultimPointer++;
                         //System.out.println("\t\t\tArrayPointer: " + ArrayPointer);
                     } else if (ultimChar < bitsUltimoChar) {
+                        //System.out.println("hey11");
                         //System.out.println("\t\tUltimChar: " + b.get(i));
                         ArrayUltimoChar.set(ultimChar, aBoolean);
+                        //System.out.println("hey12");
                         ultimChar++;
                         // System.out.println("\t\t\tArrayChar: " + ArrayUltimoChar);
                     }
                 } catch (Exception e) {
-                    System.out.println("Algo ha ido mal");
+                    System.out.println("Algo ha ido mal: " + e);
                 }
             }
         }
@@ -80,7 +97,7 @@ public class BinFile {
         //System.out.println("UltimPointer: " + ultimPointer + " ultimChar: " + ultimChar);
         if(ultimPointer > 0 && ultimChar > 0){
             readBooleans(in, b);readBooleans(in, b);
-            int d1 = obtenerDecimal(ArrayPointer) ,d2 = obtenerDecimal(ArrayUltimoChar);
+            int d1 = getDecimalNumber(ArrayPointer) ,d2 = getDecimalNumber(ArrayUltimoChar);
             Character s = (char)d2;
             //System.out.println("d1: " + d1 + "," + s);
             text.add(String.valueOf(d1));text.add(String.valueOf(s));
@@ -96,23 +113,25 @@ public class BinFile {
         return text;
     }
 
-    // Codifica el texto eficientemente en binario
-    public void writeBinFile(List textCodifiedASCII, String writeFileNameE, int numFrases) throws IOException{ // Se adapta a los bits que necesita cada cosa
-        FileOutputStream out = new FileOutputStream(writeFileNameE);
+    // Codifica el texto eficientemente en binario y lo escribe en el Fichero Binario writeFileName
+    public void writeBinFile(List textCodifiedASCII, int numFrases) throws IOException{ // Se adapta a los bits que necesita cada cosa
+        FileOutputStream out = new FileOutputStream(binFileName);
         bitsPointer = Math.max((int)Math.ceil((Math.log(numFrases)/Math.log(2))),2);
         //System.out.println("Bits necesaris " + bitsPointer);
         ArrayList<Boolean> arrayToWrite = new ArrayList<Boolean>();
-        int bitsToWrite = bitsHeader, bitsQueSobran = bitsHeader-bitsPointer; //Cuantos bits usaremos para el pointer
+        int bitsToWrite, bitsQueSobran; //Cuantos bits usaremos para el pointer
         String binarioObtenido;
         String s;
         boolean fin = false;
         // Header
-        binarioObtenido = obtenerBinario(bitsPointer);
+        binarioObtenido = getBinaryNumber(bitsPointer);
         //System.out.println("Binario Obtenido  " + binarioObtenido);
         bitsQueSobran = bitsHeader-binarioObtenido.length();
         for (int i = 0; i < bitsQueSobran; i++) arrayToWrite.add(false);
         //System.out.println("Array:  " + arrayToWrite);
         //System.out.println("binsize:  " + binarioObtenido.length());
+
+
         for (int i = 0; i < bitsHeader - bitsQueSobran; i++) {
             if(arrayToWrite.size() == 8){
                 //System.out.println(arrayToWrite);
@@ -122,8 +141,6 @@ public class BinFile {
             if (binarioObtenido.charAt(i) == '1') arrayToWrite.add(true);
             else if (binarioObtenido.charAt(i) == '0') arrayToWrite.add(false);
         }
-        //System.out.println("Array:  " + arrayToWrite);
-        //writeBooleans(out,arrayToWrite);
 
         // Fi Header
 
@@ -134,13 +151,13 @@ public class BinFile {
             //for (int c = 0; c < 2 && !fin;c++) {
             s = textCodifiedASCII.get(c).toString();
             if (c % 2 == 0) { // Codificamos el numero
-                binarioObtenido = obtenerBinario(Integer.valueOf(s)); // Numero en Binari
+                binarioObtenido = getBinaryNumber(Integer.valueOf(s)); // Numero en Binari
                 bitsQueSobran = bitsPointer - binarioObtenido.length();      // bits que tendremos que rellenar con 0
                 //System.out.println("Bits binario1 --> " + binarioObtenido + " - " + s);
                 bitsToWrite = bitsPointer;
             }
             else{ // Codificamos Char
-                binarioObtenido = obtenerBinario((int)s.charAt(0));
+                binarioObtenido = getBinaryNumber((int)s.charAt(0));
                 bitsQueSobran = bitsUltimoChar - binarioObtenido.length();
                 //System.out.println("Bits binario2 --> "+ binarioObtenido);
                 bitsToWrite = bitsUltimoChar;
@@ -149,6 +166,7 @@ public class BinFile {
                 System.out.println("----> Este Texto: " + s + " no se puede codificar con " + bitsPointer + " bits!! Faltan " + bitsQueSobran + " bits");
                 fin=true;
             }
+
             else {
                 //System.out.println("Sobran " + bitsQueSobran + " he de escriure el num " + binarioObtenido + " amb " + bitsToWrite);
                 for (int i = 0; i < bitsQueSobran; i++) { // Rellenar Huecos
@@ -172,49 +190,25 @@ public class BinFile {
                 }
             }
         }
-        //arrayToWrite.add(false);arrayToWrite.add(false);
-        //System.out.println("La llista queda aixi " + arrayToWrite);
-        //printArrayBool(arrayToWrite);
         writeBooleans(out, arrayToWrite);
-
-        //bitsPointerToWrite.add(true);bitsPointerToWrite.add(false);bitsPointerToWrite.add(false);
-        //writeBooleans(out,bitsPointerToWrite);
-        //bitsUltimoCharToWrite.add(false);bitsUltimoCharToWrite.add(false);bitsUltimoCharToWrite.add(true);
-        //writeBooleans(out,bitsUltimoCharToWrite);
-
     }
 
     //Escribe un Array de Booleans en formato bits en el fichero Binario(Comprimido)
-    public void writeBooleans(OutputStream out, ArrayList<Boolean> ar) throws IOException {
-        /*
+    private void writeBooleans(OutputStream out, ArrayList<Boolean> ar) throws IOException {
         for (int i = 0; i < ar.size(); i += 8) {
             int b = 0;
-            boolean a = false;
+            boolean a;
             for (int j = Math.min(i + 7, ar.size()-1); j >= i; j--) {
                 b = (b << 1) | (ar.get(j) ? 1 : 0);
-                if(b == 0) a = false;
-                else a = true;
-                ar.set(j, a);
-            }
-            out.write(b);
-        }
-
-         */
-        for (int i = 0; i < ar.size(); i += 8) {
-            int b = 0;
-            boolean a = false;
-            for (int j = Math.min(i + 7, ar.size()-1); j >= i; j--) {
-                b = (b << 1) | (ar.get(j) ? 1 : 0);
-                if(b == 0) a = false;
-                else a = true;
+                a = b != 0;
                 ar.set(j, a);
             }
             out.write(b);
         }
     }
 
-    //Escribe un Array de Booleans en formato bits en el fichero Binario(Comprimido)
-    public boolean readBooleans(InputStream in, ArrayList ar) throws IOException {
+    //Lee un Array de Booleans en formato bits, guarda en ar el Array y retorna true o false si quedan bits a leer o no respectivamente.
+    private boolean readBooleans(InputStream in, ArrayList ar) throws IOException {
         for (int i = 0; i < ar.size(); i += 8) {
             int b = in.read();
             if (b < 0) return true;
@@ -228,7 +222,7 @@ public class BinFile {
     }
 
     // Retorna un String con la traduccion a binario del numero que introducimos como parametro
-    private String obtenerBinario(Integer numero){
+    private static String getBinaryNumber(Integer numero){
         ArrayList<String> binario = new ArrayList<>();
         int resto;
         String binarioString = "";
@@ -242,15 +236,15 @@ public class BinFile {
         binario.add(0, Integer.toString(numero)); //Cogeremos el ultimo cociente
 
         //Cogemos cada uno de los elementos del ArrayList y los juntamos en un String
-        for(int i = 0; i < binario.size(); i++){
-            binarioString += binario.get(i);
+        for (String s : binario) {
+            binarioString += s;
         }
         return binarioString;
     }
 
     // Retorna la traduccion a decimal del numero en binario que pasamos por parametro.
     // Se considera el bit de menor peso el que se encuentra mas a la izquierda.
-    private Integer obtenerDecimal(ArrayList<Boolean> b){
+    private static Integer getDecimalNumber(ArrayList<Boolean> b){
         int decimal = 0;
         for (int i = 0; i < b.size(); i++){
             if(b.get(i)){
@@ -262,7 +256,9 @@ public class BinFile {
         return decimal;
     }
 
+    // Consulta el nombre del Fichero Binario.
     public String getBinFileName(){return binFileName;}
+
 
 
 }

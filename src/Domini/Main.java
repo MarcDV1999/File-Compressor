@@ -1,4 +1,4 @@
-package com.Marc;
+package Domini;
 /*
     Llibreries a utilitzar pel Profe:
 
@@ -29,20 +29,19 @@ package com.Marc;
 import java.io.IOException;
 
 
-import java.util.List;
-
 public class Main {
 
     public static void main(String[] args) throws IOException {
-	// write your code here
-        String name = "FitxerDeText";
+
+        String name = "f";
         //String s = "ABABCBABABAAA";
-
         LZ78 lz78 = new LZ78(name);
-        //lz78.print();
-        lz78.compress(name);
-        lz78.discompress(name);
 
+        TextFile file = new TextFile (name);
+        lz78.compress(file);
+
+        BinFile binFile = new BinFile(name);
+        lz78.discompress(binFile);
 
     }
 }

@@ -1,4 +1,4 @@
-package com.Marc;
+package Domini;
 
 import org.javatuples.Triplet;
 
@@ -12,21 +12,40 @@ class LZ78 {
 
     private HashMap<String, Triplet<Integer,Integer,Character>> code = new HashMap<> ();
     private HashMap<Integer, Triplet<String,Integer,Character>> decode = new HashMap<> ();
-    private BufferedWriter writer;
     private BinFile binFile;
-    private File file;
+    private TextFile textFile;
     private int numFrases = 0;
 
 
-    public LZ78(String name) throws IOException{
-        this.writer = new BufferedWriter(new FileWriter(name));
-        this.file = new File(name);
+    public LZ78(String name){
         this.binFile = new BinFile(name);
 
     }
 
+    //Comprime en formato LZ78 en el Archivo con Nombre: name (sin el formato).
+    public void compress(TextFile file) throws IOException {
+        List textCodifiedASCII = codify(file);
+        binFile = new BinFile(file.getName());
+
+        binFile.writeBinFile(textCodifiedASCII, numFrases);
+         //System.out.println("Texto Codificado:\t" + textCodifiedASCII);
+    }
+
+    //Descomprime en formato LZ78 en el Archivo con Nombre: name (sin el formato).
+    public void discompress(BinFile bin) throws IOException{
+        String decompressedFileName = bin.getName() + "_new.txt";
+        textFile = new TextFile(bin.getName());
+
+        List textCodifiedASCII = binFile.readBinFile();
+        //System.out.println("list: " + textCodifiedASCII);
+        String textDecodified = deCodify(textCodifiedASCII);
+        textFile.writeFile(decompressedFileName, textDecodified);
+    }
+
+
+
     // Retorna una Lista de Tuplas(Pointer, UltimoChar) en ASCII.
-    private List codify(File file) {
+    private List codify(TextFile file) {
         /*  Pre: text no ha de ser vacio, sino salta una Excepcion
             Post: Llena la HashTable con las frases frequentes en formato LZ78 con la estructura siguiente:
 
@@ -41,13 +60,13 @@ class LZ78 {
             String text = file.readFile(file.getTextFileName());
             Integer contadorID = 1; //Se usa para ir asignando ID a las distintas frases en la HashTable
             String frase = Character.toString(text.charAt(0)); // Inicialitzem la primera frase amb el primer char del text
-            Triplet tripleta = new Triplet(0, 0, frase.charAt(0)); // Realment no m'importa el valor inicial
+            Triplet tripleta; // Realment no m'importa el valor inicial
 
             code.put("", new Triplet(0, 0, '?')); // Agregamos el elemento 0 en la HashTable
 
             // Recorremos text i vamos almacenando todas las frases
             for (int i = 1; i < text.length(); i++) {
-               //if(i == text.length()-2) System.out.println("Codifiquem: " + text.charAt(i));
+                //if(i == text.length()-2) System.out.println("Codifiquem: " + text.charAt(i));
                 if (!code.containsKey(frase)) {
                     // Si no tengo la frase, lo agrego y reinicio la variable local frase
                     if (frase.length() > 1) { //Si es compuesta, tengo que buscar la frase a la que referencia
@@ -70,7 +89,7 @@ class LZ78 {
             }
             // Ejecutamos esto por si la ultima frase de text era una frase a guardar
             if (!code.containsKey(frase)) {
-                 //System.out.println("AQUI ");
+                //System.out.println("AQUI ");
                 if (frase.length() > 0) {
                     //System.out.println("\tFrase llarga: " + frase);
                     Integer v1 = code.get(frase.substring(0, frase.length() - 1)).getValue0(); // Quitamos el ultimo char a la frase para buscar en la HashTable
@@ -89,10 +108,8 @@ class LZ78 {
                 textCodifiedASCII.add(tripleta.getValue2().toString());
             }
             //System.out.println("\tFrase llarga1: " + frase);
-
-
             numFrases = --contadorID;
-            writer.close();
+
         }
         catch (Exception e) {
             System.out.println("Ha habido un Error al intentar Codificar el texto. Revise que el documento no este vacio.");
@@ -101,6 +118,7 @@ class LZ78 {
 
     }
 
+    // Retorna un texto ASCII a partir de un Lista de Tuplas(Pointer, UltimoChar).
     private String deCodify(List textCompressedASCII){
         decode.clear();
         String textDescompressed = "";
@@ -135,23 +153,6 @@ class LZ78 {
         }
         return textDescompressed;
     }
-
-
-    //Coge el conjunto de tuplas a escribir en el binario y lo escribe en el.
-    public void compress(String name) throws IOException {
-        List textCodifiedASCII = codify(file);
-        binFile.writeBinFile(textCodifiedASCII,binFile.getBinFileName(), numFrases);
-        System.out.println("Texto Codificado:\t" + textCodifiedASCII);
-    }
-
-    // Coge el texto Comprimido en Binario y lo traduce a un String en ASCII
-    public void discompress(String name) throws IOException{
-        String decompressedFileName = name + "Unziped.txt";
-        List textCodifiedASCII = binFile.readBinFile(binFile.getBinFileName());
-        String textDecodified = deCodify(textCodifiedASCII);
-        file.writeFile(decompressedFileName, textDecodified);
-    }
-
 
 
 }
