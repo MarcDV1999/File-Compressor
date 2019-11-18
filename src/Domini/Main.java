@@ -1,4 +1,11 @@
 package Domini;
+//
+//  Main.java
+//  PROP Compressor Descompressor
+//
+//  Created by Marc Domènech.
+//  Copyright © 2019 Marc Domènech. All rights reserved.
+//
 /*
     Llibreries a utilitzar pel Profe:
 
@@ -33,15 +40,14 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        String name = "f";
+        String name = "fitxer";
         //String s = "ABABCBABABAAA";
-        LZ78 lz78 = new LZ78(name);
+        LZ78 lz78 = new LZ78();
 
         TextFile file = new TextFile (name);
         lz78.compress(file);
 
         BinFile binFile = new BinFile(name);
         lz78.discompress(binFile);
-
     }
 }

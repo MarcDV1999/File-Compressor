@@ -1,6 +1,14 @@
 package Domini;
 
-import java.io.IOException;
+//
+//  Driver_LZ78.java
+//  PROP Compressor Descompressor
+//
+//  Created by Marc Domènech.
+//  Copyright © 2019 Marc Domènech. All rights reserved.
+//
+
+
 import java.util.Scanner;
 
 public class Driver_LZ78 {
@@ -29,7 +37,7 @@ public class Driver_LZ78 {
                     nomFitxer = sc.next();
                     nom = nomFitxer.substring(0, nomFitxer.length() - 4);
                     textfile = new TextFile(nom);
-                    lz78 = new LZ78(nom);
+                    lz78 = new LZ78();
                     lz78.compress(textfile);
                     System.out.println("Obre el Fitxer " + textfile.getTextFileName() + " per veure els canvis.");
                     break;
@@ -38,7 +46,7 @@ public class Driver_LZ78 {
                     nomFitxer = sc.next();
                     nom = nomFitxer.substring(0, nomFitxer.length() - 4);
                     binFile = new BinFile(nom);
-                    lz78 = new LZ78(nom);
+                    lz78 = new LZ78();
                     lz78.discompress(binFile);
                     System.out.println("Obre el Fitxer " + binFile.getBinFileName() + " per veure els canvis.");
                     break;

@@ -1,9 +1,12 @@
 package Domini;
+//
+//  Driver_File.java
+//  PROP Compressor Descompressor
+//
+//  Created by Marc Domènech.
+//  Copyright © 2019 Marc Domènech. All rights reserved.
+//
 
-import com.sun.codemodel.internal.JFieldRef;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.Scanner;
 
 public class Driver_File {
@@ -12,10 +15,10 @@ public class Driver_File {
         int estado = 0, fin = 1000;
         String nomFitxer, nom;
         Scanner sc = new Scanner(System.in);
-        File file;
+        TextFile file;
 
         while (estado != fin) {
-            System.out.println("Driver BinFile:");
+            System.out.println("Driver File:");
             System.out.println("\t1. Consultar Nom del Fitxer");
             System.out.println("\t2. Exit");
             System.out.println("Introdueixi un numero: ");
@@ -26,8 +29,7 @@ public class Driver_File {
                     System.out.println("----> Introdueixi el nom del Fitxer (Exemple: Fitxer.txt): ");
                     nomFitxer = sc.next();
                     nom = nomFitxer.substring(0,nomFitxer.length()-4);
-                    file = new File(nom);
-
+                    file = new TextFile(nom);
                     System.out.println("Nom del fitxer sense extensió: " + file.getName());
                     break;
                 case 2:

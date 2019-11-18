@@ -1,4 +1,12 @@
 package Domini;
+//
+//  LZ78.java
+//  PROP Compressor Descompressor
+//
+//  Created by Marc Domènech.
+//  Copyright © 2019 Marc Domènech. All rights reserved.
+//
+
 
 import org.javatuples.Triplet;
 
@@ -12,20 +20,15 @@ class LZ78 {
 
     private HashMap<String, Triplet<Integer,Integer,Character>> code = new HashMap<> ();
     private HashMap<Integer, Triplet<String,Integer,Character>> decode = new HashMap<> ();
-    private BinFile binFile;
+    private Ctrl_BinFile binFile;
     private TextFile textFile;
     private int numFrases = 0;
 
 
-    public LZ78(String name){
-        this.binFile = new BinFile(name);
-
-    }
-
     //Comprime en formato LZ78 en el Archivo con Nombre: name (sin el formato).
     public void compress(TextFile file) throws IOException {
         List textCodifiedASCII = codify(file);
-        binFile = new BinFile(file.getName());
+        binFile = new Ctrl_BinFile(file.getName());
 
         binFile.writeBinFile(textCodifiedASCII, numFrases);
          //System.out.println("Texto Codificado:\t" + textCodifiedASCII);
@@ -41,7 +44,6 @@ class LZ78 {
         String textDecodified = deCodify(textCodifiedASCII);
         textFile.writeFile(decompressedFileName, textDecodified);
     }
-
 
 
     // Retorna una Lista de Tuplas(Pointer, UltimoChar) en ASCII.

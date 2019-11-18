@@ -1,11 +1,15 @@
 package Domini;
+//
+//  Driver_TextFile.java
+//  PROP Compressor Descompressor
+//
+//  Created by Marc Domènech.
+//  Copyright © 2019 Marc Domènech. All rights reserved.
+//
+
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Driver_TextFile{
@@ -18,7 +22,7 @@ public class Driver_TextFile{
         TextFile textFile;
 
         while (estado != fin) {
-            System.out.println("Driver BinFile:");
+            System.out.println("Driver TextFile:");
             System.out.println("\t1. Llegir Fitxer de text");
             System.out.println("\t2. Escriure Fitxer de text");
             System.out.println("\t3. Consultar nom del fitxer");
