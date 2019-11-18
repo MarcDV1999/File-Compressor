@@ -20,8 +20,8 @@ class LZ78 {
 
     private HashMap<String, Triplet<Integer,Integer,Character>> code = new HashMap<> ();
     private HashMap<Integer, Triplet<String,Integer,Character>> decode = new HashMap<> ();
-    private Ctrl_BinFile binFile;
-    private TextFile textFile;
+    private static Ctrl_BinFile binFile;
+    private static TextFile textFile;
     private int numFrases = 0;
 
 
@@ -31,7 +31,7 @@ class LZ78 {
         binFile = new Ctrl_BinFile(file.getName());
 
         binFile.writeBinFile(textCodifiedASCII, numFrases);
-         //System.out.println("Texto Codificado:\t" + textCodifiedASCII);
+         System.out.println("Texto Codificado:\t" + textCodifiedASCII);
     }
 
     //Descomprime en formato LZ78 en el Archivo con Nombre: name (sin el formato).

@@ -35,33 +35,45 @@ public class Driver_TextFile{
             switch (estado) {
                 case 1:
                     System.out.println("----> Introdueixi el nom del Fitxer de text(Exemple: Fitxer.txt): ");
-                    nomFitxer = sc.next();
-                    nom = nomFitxer.substring(0,nomFitxer.length()-4);
-                    textFile = new TextFile(nom);
+                    try {
+                        nomFitxer = sc.next();
+                        nom = nomFitxer.substring(0, nomFitxer.length() - 4);
+                        textFile = new TextFile(nom);
 
-                    String s = textFile.readFile(textFile.getTextFileName());
-                    System.out.println("Lectura del Text: " + s);
+                        String s = textFile.readFile(textFile.getTextFileName());
+                        System.out.println("Lectura del Text: " + s);
+                    }catch (Exception e){
+                        System.out.println("Nom de fitxer erroni, torni a intentar-ho");
+                    }
                     break;
                 case 2:
                     System.out.println("----> Introdueixi el nom del Fitxer de text(Exemple: Fitxer.txt): ");
-                    nomFitxer = sc.next();
-                    nom = nomFitxer.substring(0,nomFitxer.length()-4);
-                    textFile = new TextFile(nom);
+                    try {
+                        nomFitxer = sc.next();
+                        nom = nomFitxer.substring(0, nomFitxer.length() - 4);
+                        textFile = new TextFile(nom);
 
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-                    System.out.println("----> Introdueixi un text (exemple: Hola em dic Marc): ");
-                    String name = reader.readLine();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+                        System.out.println("----> Introdueixi un text (exemple: Hola em dic Marc): ");
+                        String name = reader.readLine();
 
-                    textFile.writeFile(textFile.getTextFileName(), name);
-                    System.out.println("Obrir el text per veure el resultat: ");
+                        textFile.writeFile(textFile.getTextFileName(), name);
+                        System.out.println("Obrir el text per veure el resultat: ");
+                    }catch (Exception e){
+                        System.out.println("Nom de fitxer erroni, torni a intentar-ho");
+                    }
                     break;
                 case 3:
                     System.out.println("----> Introdueixi el nom del Fitxer de text(Exemple: Fitxer.txt): ");
-                    nomFitxer = sc.next();
-                    nom = nomFitxer.substring(0,nomFitxer.length()-4);
-                    textFile = new TextFile(nom);
+                    try {
+                        nomFitxer = sc.next();
+                        nom = nomFitxer.substring(0, nomFitxer.length() - 4);
+                        textFile = new TextFile(nom);
 
-                    System.out.println("Nom del Fitxer: " + textFile.getTextFileName());
+                        System.out.println("Nom del Fitxer: " + textFile.getTextFileName());
+                    }catch (Exception e){
+                        System.out.println("Nom de fitxer erroni, torni a intentar-ho");
+                    }
                     break;
 
                 case 4:

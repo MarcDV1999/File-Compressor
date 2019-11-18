@@ -49,5 +49,11 @@ public class Main {
 
         BinFile binFile = new BinFile(name);
         lz78.discompress(binFile);
+        LZSS lzss = new LZSS(name);
+        lzss.compress(file);
+
+        CompressedFile c = lzss.compress(file);
+        lzss.decodify(c);
+
     }
 }

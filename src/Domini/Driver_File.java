@@ -19,18 +19,23 @@ public class Driver_File {
 
         while (estado != fin) {
             System.out.println("Driver File:");
-            System.out.println("\t1. Consultar Nom del Fitxer");
+            System.out.println("\t1. Consultar Nom del Fitxer sense extensió");
             System.out.println("\t2. Exit");
             System.out.println("Introdueixi un numero: ");
             estado = sc.nextInt();
 
             switch (estado) {
                 case 1:
-                    System.out.println("----> Introdueixi el nom del Fitxer (Exemple: Fitxer.txt): ");
-                    nomFitxer = sc.next();
-                    nom = nomFitxer.substring(0,nomFitxer.length()-4);
-                    file = new TextFile(nom);
-                    System.out.println("Nom del fitxer sense extensió: " + file.getName());
+                    try {
+                        System.out.println("----> Introdueixi el nom del Fitxer (Exemple: Fitxer.txt): ");
+                        nomFitxer = sc.next();
+                        nom = nomFitxer.substring(0, nomFitxer.length() - 4);
+                        file = new TextFile(nom);
+                        System.out.println("Nom del fitxer sense extensió: " + file.getName());
+                    }
+                    catch (Exception e){
+                        System.out.println("Nom de fitxer erroni, torni a intentar-ho");
+                    }
                     break;
                 case 2:
                     fin = 2;
