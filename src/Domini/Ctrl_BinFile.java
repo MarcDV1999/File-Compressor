@@ -27,7 +27,7 @@ public class Ctrl_BinFile extends BinFile {
     public List<String> readBinFile() throws IOException {
         //boolean[] ArrayHeader = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
         List<String> text = new ArrayList<>();
-        //System.out.println("bitspointer " + bitsPointer);
+        //System.out.println("binfilename "+ binFileName );
         //String text = "";
         FileInputStream in = new FileInputStream(binFileName);
 

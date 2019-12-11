@@ -33,7 +33,10 @@ package Domini;
 
  */
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
+import java.io.File;
 
 
 public class Main {
@@ -42,6 +45,7 @@ public class Main {
 
         String name = "fitxer";
         //String s = "ABABCBABABAAA";
+        String route = "user.dir";
         LZ78 lz78 = new LZ78();
 
         TextFile file = new TextFile (name);
@@ -54,6 +58,8 @@ public class Main {
 
         CompressedFile c = lzss.compress(file);
         lzss.decodify(c);
+
+        Folder f = new Folder(route);
 
     }
 }

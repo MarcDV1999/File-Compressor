@@ -23,6 +23,7 @@ class LZ78 {
     private static Ctrl_BinFile binFile;
     private static TextFile textFile;
     private int numFrases = 0;
+    private String new_extension = "_new.txt";
 
 
     //Comprime en formato LZ78 en el Archivo con Nombre: name (sin el formato).
@@ -36,8 +37,9 @@ class LZ78 {
 
     //Descomprime en formato LZ78 en el Archivo con Nombre: name (sin el formato).
     public void discompress(BinFile bin) throws IOException{
-        String decompressedFileName = bin.getName() + "_new.txt";
+        String decompressedFileName = bin.getName() + new_extension;
         textFile = new TextFile(bin.getName());
+        binFile = new Ctrl_BinFile(bin.getName());
 
         List textCodifiedASCII = binFile.readBinFile();
         //System.out.println("list: " + textCodifiedASCII);
@@ -156,6 +158,7 @@ class LZ78 {
         return textDescompressed;
     }
 
+    public String getNew_extension(){return new_extension;}
 
 }
 

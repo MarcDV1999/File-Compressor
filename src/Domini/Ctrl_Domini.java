@@ -16,10 +16,12 @@ public class Ctrl_Domini {
         lz78.compress(file);
     }
 
-    public void disCompressLZ78(String nom) throws IOException {
+    public String disCompressLZ78(String nom) throws IOException {
         BinFile file = new BinFile(nom);
         LZ78 lz78 = new LZ78();
         lz78.discompress(file);
+        //System.out.println(file.getName() + lz78.getNew_extension());
+        return file.getName() + lz78.getNew_extension();
     }
     public void compressLZSS(String nom) throws IOException {
         TextFile file = new TextFile(nom);
