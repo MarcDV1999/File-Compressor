@@ -27,8 +27,7 @@ public class Ctrl_BinFile extends BinFile {
     public List<String> readBinFile() throws IOException {
         //boolean[] ArrayHeader = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
         List<String> text = new ArrayList<>();
-        //System.out.println("binfilename "+ binFileName );
-        //String text = "";
+
         FileInputStream in = new FileInputStream(binFileName);
 
         ArrayList<Boolean> b = new ArrayList<>();
@@ -117,6 +116,7 @@ public class Ctrl_BinFile extends BinFile {
         //System.out.println("Texto Decodificado: " + text);
         //System.out.println("The file size was " + new File(writeFileName).length()+" bytes.");
         in.close();
+
         return text;
     }
 
@@ -124,12 +124,13 @@ public class Ctrl_BinFile extends BinFile {
     public void writeBinFile(List textCodifiedASCII, int numFrases) throws IOException{ // Se adapta a los bits que necesita cada cosa
         FileOutputStream out = new FileOutputStream(binFileName);
         bitsPointer = Math.max((int)Math.ceil((Math.log(numFrases)/Math.log(2))),2);
-        //System.out.println("Bits necesaris " + bitsPointer);
+
         ArrayList<Boolean> arrayToWrite = new ArrayList<Boolean>();
         int bitsToWrite, bitsQueSobran; //Cuantos bits usaremos para el pointer
         String binarioObtenido;
         String s;
         boolean fin = false;
+
         // Header
         binarioObtenido = getBinaryNumber(bitsPointer);
         //System.out.println("Binario Obtenido  " + binarioObtenido);
@@ -197,7 +198,9 @@ public class Ctrl_BinFile extends BinFile {
                 }
             }
         }
+
         writeBooleans(out, arrayToWrite);
     }
+
 
 }

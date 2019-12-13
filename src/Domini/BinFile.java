@@ -87,6 +87,9 @@ public class BinFile extends File {
     // Consulta el nombre del Fichero Binario.
     public String getBinFileName(){return binFileName;}
 
-
+    public double getSize(){
+        java.io.File f = new java.io.File(binFileName);
+        return f.length(); // bytes
+    }
 
 }

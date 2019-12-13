@@ -44,4 +44,9 @@ public class TextFile extends File {
     public  String getTextFileName(){
         return textFileName;
     }
+
+    public double getSize(){
+        java.io.File f = new java.io.File(textFileName);
+        return f.length(); // bytes
+    }
 }

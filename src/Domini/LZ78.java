@@ -23,20 +23,30 @@ class LZ78 {
     private static Ctrl_BinFile binFile;
     private static TextFile textFile;
     private int numFrases = 0;
+    private long executionTimeIni,executionTimeEnd, executionTime= System.currentTimeMillis();
     private String new_extension = "_new.txt";
+    private Set_Statistics statistics;
 
+    public LZ78(){statistics = new Set_Statistics();}
 
     //Comprime en formato LZ78 en el Archivo con Nombre: name (sin el formato).
     public void compress(TextFile file) throws IOException {
+        executionTimeIni = System.currentTimeMillis();
         List textCodifiedASCII = codify(file);
         binFile = new Ctrl_BinFile(file.getName());
 
         binFile.writeBinFile(textCodifiedASCII, numFrases);
-         System.out.println("Texto Codificado:\t" + textCodifiedASCII);
+        executionTimeEnd = System.currentTimeMillis();
+        executionTime = executionTimeEnd - executionTimeIni; // ms
+        Statistic s = new Statistic(executionTime,file.getSize(), binFile.getSize());
+        statistics.addCompressLZ78(s);
+        //System.out.println("EIni: " + executionTimeIni + " - ExecutionTimeEnd: " + executionTimeEnd);
+        //System.out.println("Texto Codificado:\t" + textCodifiedASCII);
     }
 
     //Descomprime en formato LZ78 en el Archivo con Nombre: name (sin el formato).
     public void discompress(BinFile bin) throws IOException{
+        executionTimeIni = System.currentTimeMillis();
         String decompressedFileName = bin.getName() + new_extension;
         textFile = new TextFile(bin.getName());
         binFile = new Ctrl_BinFile(bin.getName());
@@ -45,6 +55,12 @@ class LZ78 {
         //System.out.println("list: " + textCodifiedASCII);
         String textDecodified = deCodify(textCodifiedASCII);
         textFile.writeFile(decompressedFileName, textDecodified);
+
+        executionTimeEnd = System.currentTimeMillis();
+        executionTime = executionTimeEnd - executionTimeIni; // ms
+        Statistic s = new Statistic(executionTime,bin.getSize(), textFile.getSize());
+        statistics.addDiscompressLZ78(s);
+        //statistics.addDiscompressLZ78(new Statistic(-3,-4,-5));
     }
 
 
@@ -125,40 +141,41 @@ class LZ78 {
     // Retorna un texto ASCII a partir de un Lista de Tuplas(Pointer, UltimoChar).
     private String deCodify(List textCompressedASCII){
         decode.clear();
-        String textDescompressed = "";
+        long executionTimeIni;
+        String textDescompressed = "", ultimoChar = "", frase = "";
         int contadorID = 1, pointer;
-        String ultimoChar = "";
-        //String frase = textDeCodifiedASCII.get(0).toString(); // Inicialitzem la primera frase amb el primer char del text
-        String frase = "";
-        //System.out.println("Hola: " + textDeCodifiedASCII.get(0));
-        //Triplet tripleta = new Triplet(0, 0, frase.charAt(0));
+
 
         decode.put(0, new Triplet("", 0, '?')); // Agregamos el elemento 0 en la HashTable
-        // Decodificamos Header
+        System.out.println("textCompressedASCII: " + textCompressedASCII.size());
 
         for (int i = 0; i < textCompressedASCII.size(); i+=2){
             pointer = Integer.valueOf(textCompressedASCII.get(i).toString());
             ultimoChar = textCompressedASCII.get(i+1).toString();
-            //System.out.println("Analizamos " + pointer + "," + ultimoChar);
+
             if(pointer == 0) {
                 //System.out.println("\tEs 0, Añadimos la letra " + ultimoChar);
+                executionTimeIni = System.currentTimeMillis();
                 decode.put(contadorID++, new Triplet<String, Integer, Character>(ultimoChar, pointer, ultimoChar.charAt(0)));
+                executionTimeEnd = System.currentTimeMillis() - executionTimeIni;
                 textDescompressed += ultimoChar.charAt(0);
             }
             else{
 
                 frase = decode.get(pointer).getValue0();
+                System.out.println("Temps: " + executionTimeEnd);
                 //System.out.println("\tEs FRASE, Añadimos la letra " + frase + ultimoChar);
                 decode.put(contadorID++, new Triplet<String, Integer, Character>(frase + ultimoChar, pointer, ultimoChar.charAt(0)));
                 textDescompressed += frase + ultimoChar;
             }
-            //System.out.println("Text:\t" + textDescompressed + "\n----------------");
 
         }
         return textDescompressed;
     }
 
     public String getNew_extension(){return new_extension;}
+
+    public Set_Statistics getStatistics(){return statistics;}
 
 }
 

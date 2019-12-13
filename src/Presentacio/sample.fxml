@@ -14,6 +14,11 @@
    <children>
       <AnchorPane fx:id="zipPanel" prefHeight="400.0" prefWidth="782.0" style="-fx-background-color: #535760#535760;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <children>
+            <Label alignment="CENTER" layoutY="22.0" prefHeight="50.0" prefWidth="519.0" text="Compressor PROP" textFill="WHITE">
+               <font>
+                  <Font name="Avenir Next Bold" size="48.0" />
+               </font>
+            </Label>
             <AnchorPane fx:id="zipPanel" layoutY="85.0" prefHeight="269.0" prefWidth="583.0">
                <children>
                   <ImageView fitHeight="60.0" fitWidth="50.0" layoutX="68.0" layoutY="41.0" onMouseClicked="#onZipImageClicked" pickOnBounds="true" preserveRatio="true">
@@ -23,22 +28,22 @@
                   </ImageView>
                   <Button fx:id="selectFile" layoutX="43.0" layoutY="105.0" mnemonicParsing="false" onMouseClicked="#onSelectFileClicked" prefHeight="27.0" prefWidth="101.0" style="-fx-background-color: #5C93D6#5C93D6;" text="Seleccionar Arxiu" textFill="WHITE">
                      <font>
-                        <Font size="9.0" />
+                        <Font name="Futura Medium" size="10.0" />
                      </font>
                   </Button>
                   <Label layoutX="76.0" layoutY="134.0" text=".txt .bin" textFill="#2f2f2f">
                      <font>
-                        <Font size="10.0" />
+                        <Font name="Futura Medium" size="10.0" />
                      </font>
                   </Label>
                   <Label fx:id="fileNameLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="44.0" layoutY="110.0" prefHeight="17.0" prefWidth="101.0" textFill="WHITE" visible="false">
                      <font>
-                        <Font name="Arial" size="13.0" />
+                        <Font name="Futura Medium" size="13.0" />
                      </font>
                   </Label>
                   <Button fx:id="changeFile" layoutX="43.0" layoutY="147.0" mnemonicParsing="false" onMouseClicked="#onSelectFileClicked" prefHeight="27.0" prefWidth="101.0" style="-fx-background-color: transparent;" text="Canviar" textFill="#009dff" visible="false">
                      <font>
-                        <Font size="9.0" />
+                        <Font name="Futura Medium" size="11.0" />
                      </font>
                   </Button>
                   <Line fx:id="lineTop1" endX="-181.5" endY="31.0" layoutX="417.0" layoutY="35.0" startX="-298.0" startY="31.0" stroke="GREY" />
@@ -56,59 +61,135 @@
                   </ImageView>
                   <Button fx:id="compressButton" layoutX="412.0" layoutY="105.0" mnemonicParsing="false" onMouseClicked="#onCompressButtonClicked" prefHeight="27.0" prefWidth="101.0" style="-fx-background-color: #5C93D6#5C93D6 #5C93D6#5C93D6;" text="Comprimir" textFill="WHITE" visible="false">
                      <font>
-                        <Font name="Arial" size="10.0" />
+                        <Font name="Futura Medium" size="12.0" />
                      </font>
                   </Button>
                   <Button fx:id="disCompressButton" layoutX="412.0" layoutY="105.0" mnemonicParsing="false" onMouseClicked="#onDiscompressButtonClicked" prefHeight="27.0" prefWidth="101.0" style="-fx-background-color: #5C93D6#5C93D6 #5C93D6#5C93D6;" text="Descomprimir" textFill="WHITE" visible="false">
                      <font>
-                        <Font size="10.0" />
+                        <Font name="Futura Medium" size="12.0" />
                      </font>
                   </Button>
                   <Button fx:id="visualizeFile" layoutX="412.0" layoutY="141.0" mnemonicParsing="false" onMouseClicked="#onVisualizeButtonClicked" prefHeight="27.0" prefWidth="101.0" style="-fx-background-color: #5C93D6#5C93D6 #5C93D6#5C93D6;" text="Visualitzar" textFill="WHITE" visible="false">
                      <font>
-                        <Font size="10.0" />
+                        <Font name="Futura Medium" size="12.0" />
                      </font>
                   </Button>
-                  <Button fx:id="selectFile1" layoutX="76.0" layoutY="232.0" mnemonicParsing="false" onMouseClicked="#onStatisticsImageClicked" prefHeight="27.0" prefWidth="101.0" style="-fx-background-color: #E0A800#E0A800;" text="Estadistiques" textFill="WHITE">
+                  <Button fx:id="selectFile1" layoutX="62.0" layoutY="238.0" mnemonicParsing="false" onMouseClicked="#onStatisticsImageClicked" prefHeight="27.0" prefWidth="101.0" style="-fx-background-color: transparent;" text="Estadístiques" textFill="WHITE">
                      <font>
-                        <Font size="9.0" />
+                        <Font name="Futura Medium" size="14.0" />
                      </font>
                   </Button>
-                  <ImageView fitHeight="40.0" fitWidth="33.0" layoutX="34.0" layoutY="229.0" onMouseClicked="#onStatisticsImageClicked" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="40.0" fitWidth="33.0" layoutX="34.0" layoutY="235.0" onMouseClicked="#onStatisticsImageClicked" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@Images/grafico-circular.png" />
+                        <Image url="@Images/grafico-de-barras.png" />
                      </image>
                   </ImageView>
+                  <Label fx:id="textEstadistica" alignment="BOTTOM_CENTER" layoutX="184.0" layoutY="203.0" prefHeight="57.0" prefWidth="329.0" textFill="WHITE">
+                     <font>
+                        <Font name="Futura Medium" size="12.0" />
+                     </font>
+                  </Label>
                </children>
             </AnchorPane>
-            <Label alignment="CENTER" prefHeight="50.0" prefWidth="519.0" text="Compressor PROP" textFill="WHITE">
-               <font>
-                  <Font name="Avenir Next Bold" size="48.0" />
-               </font>
-            </Label>
-            <TextArea fx:id="visualitzacioArxiu" layoutX="582.0" layoutY="36.0" prefHeight="321.0" prefWidth="200.0" />
-            <Label layoutX="39.0" layoutY="361.0" prefHeight="17.0" prefWidth="215.0" text="Marc Domènech i Manolete" />
-            <Label layoutX="429.0" layoutY="361.0" prefHeight="17.0" prefWidth="83.0" text="Versió 4.6.3" />
-            <Line endX="179.0" endY="31.0" layoutX="332.0" layoutY="323.0" startX="-298.0" startY="31.0" />
             <AnchorPane fx:id="statisticsPanel" layoutX="10.0" layoutY="95.0" prefHeight="260.0" prefWidth="519.0" visible="false">
                <children>
-                  <Label layoutX="14.0" layoutY="14.0" prefHeight="50.0" prefWidth="221.0" text="Estadistiques" textFill="#ffb900">
+                  <Label layoutX="36.0" layoutY="14.0" prefHeight="50.0" prefWidth="446.0" text="Estadistiques" textFill="#ffd900">
                      <font>
-                        <Font name="Avenir Next Bold" size="22.0" />
+                        <Font name="Futura Medium" size="22.0" />
                      </font>
                   </Label>
-                  <ImageView fitHeight="40.0" fitWidth="33.0" layoutX="28.0" layoutY="219.0" onMouseClicked="#onZipImageClicked" pickOnBounds="true" preserveRatio="true" scaleX="1.2" scaleY="1.2">
+                  <ImageView fitHeight="40.0" fitWidth="33.0" layoutX="28.0" layoutY="219.0" onMouseClicked="#onZipImageClicked" pickOnBounds="true" preserveRatio="true" scaleX="0.9" scaleY="0.9">
                      <image>
-                        <Image url="@Images/flecha-izquierda.png" />
+                        <Image url="@Images/triangulo.png" />
                      </image>
                   </ImageView>
-                  <Label layoutX="64.0" layoutY="227.0" text="Enrere" textFill="WHITE">
+                  <Label layoutX="241.0" layoutY="39.0" text="LZ78" textFill="WHITE" underline="true">
                      <font>
-                        <Font name="Avenir Next Bold" size="13.0" />
+                        <Font name="Futura Medium" size="18.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="346.0" layoutY="39.0" text="LZSS" textFill="WHITE" underline="true">
+                     <font>
+                        <Font name="Futura Medium" size="18.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="59.0" layoutY="86.0" text="Velocitat de Compressió" textFill="WHITE">
+                     <font>
+                        <Font name="Futura Medium" size="13.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="59.0" layoutY="118.0" text="Ratio de Compressió" textFill="WHITE">
+                     <font>
+                        <Font name="Futura Medium" size="13.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="239.0" layoutY="86.0" text="0 Mbps" textFill="WHITE">
+                     <font>
+                        <Font name="Futura Medium" size="13.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="341.0" layoutY="86.0" text="0 Mbps" textFill="WHITE">
+                     <font>
+                        <Font name="Futura Medium" size="13.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="241.0" layoutY="118.0" text="100%" textFill="WHITE">
+                     <font>
+                        <Font name="Futura Medium" size="13.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="343.0" layoutY="118.0" text="100%" textFill="WHITE">
+                     <font>
+                        <Font name="Futura Medium" size="13.0" />
+                     </font>
+                  </Label>
+                  <Button layoutX="55.0" layoutY="222.0" mnemonicParsing="false" onMouseClicked="#onZipImageClicked" style="-fx-background-color: transparent;" text="Enrere" textAlignment="CENTER" textFill="WHITE" textOverrun="CLIP">
+                     <font>
+                        <Font name="Futura Medium" size="13.0" />
+                     </font>
+                  </Button>
+                  <Label layoutX="59.0" layoutY="147.0" text="Velocitat de Descompressió" textFill="WHITE">
+                     <font>
+                        <Font name="Futura Medium" size="13.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="59.0" layoutY="178.0" text="Ratio de Desompressió" textFill="WHITE">
+                     <font>
+                        <Font name="Futura Medium" size="13.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="236.0" layoutY="147.0" text="0 Mbps" textFill="WHITE">
+                     <font>
+                        <Font name="Futura Medium" size="13.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="338.0" layoutY="147.0" text="0 Mbps" textFill="WHITE">
+                     <font>
+                        <Font name="Futura Medium" size="13.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="241.0" layoutY="178.0" text="100%" textFill="WHITE">
+                     <font>
+                        <Font name="Futura Medium" size="13.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="343.0" layoutY="178.0" text="100%" textFill="WHITE">
+                     <font>
+                        <Font name="Futura Medium" size="13.0" />
                      </font>
                   </Label>
                </children>
             </AnchorPane>
+            <TextArea fx:id="visualitzacioArxiu" layoutX="551.0" layoutY="36.0" prefHeight="321.0" prefWidth="231.0" />
+            <Label layoutX="39.0" layoutY="361.0" prefHeight="17.0" prefWidth="215.0" text="Alex Climent i Marc Domènech" textFill="#aaacb9">
+               <font>
+                  <Font name="Futura Medium" size="13.0" />
+               </font></Label>
+            <Label layoutX="429.0" layoutY="361.0" prefHeight="17.0" prefWidth="83.0" text="Versió 4.6.3" textFill="#aaacb9">
+               <font>
+                  <Font name="Futura Medium" size="13.0" />
+               </font></Label>
+            <Line endX="179.0" endY="31.0" layoutX="332.0" layoutY="323.0" startX="-298.0" startY="31.0" stroke="#808080" />
          </children>
       </AnchorPane>
    </children>

@@ -20,7 +20,7 @@ import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Observable;
+import java.text.DecimalFormat;
 
 public class Controller {
     ObservableList<String> list = FXCollections.observableArrayList();
@@ -30,6 +30,7 @@ public class Controller {
     @FXML private AnchorPane zipPanel;
     @FXML private AnchorPane statisticsPanel;
     @FXML private Label fileNameLabel;
+    @FXML private Label textEstadistica;
     @FXML private ChoiceBox<String> algorithms;
 
     @FXML private TextArea visualitzacioArxiu;
@@ -46,7 +47,6 @@ public class Controller {
 
     private File selectedFile;
     private Ctrl_Domini domini = new Ctrl_Domini();
-
     public void onZipImageClicked(MouseEvent event){
 
         zipPanel.setVisible(true);
@@ -68,6 +68,9 @@ public class Controller {
         String nom = selectedFile.getAbsolutePath().substring(0, selectedFile.getAbsolutePath().length() - 4);
         if(algorithms.getValue() == "LZ78") domini.compressLZ78(nom);
         else domini.compressLZSS(nom);
+        String tanPerCent = new DecimalFormat("#").format(domini.getStatisticsCompressLZ78Ratio());
+        String vel = new DecimalFormat("#.0").format(domini.getStatisticsCompressLZ78Vel());
+        textEstadistica.setText("El fitxer " + selectedFile.getName() + " s'ha comprimit reduint\nel fitxer en un " + tanPerCent + "% i la velocitat\nde compressió ha estat de " + vel + " Kbps.");
     }
 
     public void onDiscompressButtonClicked(MouseEvent event) throws IOException {
@@ -75,6 +78,9 @@ public class Controller {
         String nom = selectedFile.getAbsolutePath().substring(0, selectedFile.getAbsolutePath().length() - 4);
         if(algorithms.getValue() == "LZ78") domini.disCompressLZ78(nom);
         else domini.disCompressLZSS(nom);
+        String tanPerCent = new DecimalFormat("#").format(domini.getStatisticsDiscompressLZ78Ratio());
+        String vel = new DecimalFormat("#.0").format(domini.getStatisticsDiscompressLZ78Vel());
+        textEstadistica.setText("El fitxer " + selectedFile.getName() + " s'ha descomprimit ocupant\nun " + tanPerCent + "% més i la velocitat\nde descompressió ha estat de " + vel + " Kbps.");
     }
 
     public void onVisualizeButtonClicked(MouseEvent event) throws IOException{
@@ -82,10 +88,18 @@ public class Controller {
         String nom = selectedFile.getAbsolutePath().substring(0, selectedFile.getAbsolutePath().length() - 4);
         String nomNouFitxer = "";
         TextFile textFile = new TextFile(nom);
-        System.out.println(nomNouFitxer);
         if(algorithms.getValue() == "LZ78") nomNouFitxer = domini.disCompressLZ78(nom);
         else domini.disCompressLZSS(nom);
         visualitzacioArxiu.setText(textFile.readFile(nomNouFitxer));
+        //System.out.println(nomNouFitxer);
+        try {
+            File f = new File(nomNouFitxer);
+            f.delete();
+        }
+        catch (Exception e){
+            System .out.println("No s'ha pogut borrar el arxiu " + nomNouFitxer);
+        }
+        //ScaleTransition st = new ScaleTransition(Duration.millis(2000), rect);
     }
 
     public void onSelectFileClicked(MouseEvent event){
