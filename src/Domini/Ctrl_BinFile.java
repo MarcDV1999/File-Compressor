@@ -150,6 +150,7 @@ public class Ctrl_BinFile extends BinFile {
             else if (binarioObtenido.charAt(i) == '0') arrayToWrite.add(false);
         }
 
+
         // Fi Header
 
 
@@ -201,6 +202,5 @@ public class Ctrl_BinFile extends BinFile {
 
         writeBooleans(out, arrayToWrite);
     }
-
 
 }

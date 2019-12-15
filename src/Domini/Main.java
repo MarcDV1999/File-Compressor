@@ -33,8 +33,6 @@ package Domini;
 
  */
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.IOException;
 import java.io.File;
 
@@ -45,21 +43,15 @@ public class Main {
 
         String name = "fitxer";
         //String s = "ABABCBABABAAA";
-        String route = "user.dir";
-        LZ78 lz78 = new LZ78();
+        String route = "/Users/marcdomenech/Desktop/PROP_LZ78/src/c";
 
-        TextFile file = new TextFile (name);
-        lz78.compress(file);
-
-        BinFile binFile = new BinFile(name);
-        lz78.discompress(binFile);
-        LZSS lzss = new LZSS(name);
-        lzss.compress(file);
-
-        CompressedFile c = lzss.compress(file);
-        lzss.decodify(c);
 
         Folder f = new Folder(route);
+        //System.out.println("Parent: " + f.getParent());
+        String s = "Hola MArc" + '\0' + " soy yo";
+        for(int i = 0; i< s.length() ;i++){
+            if(s.charAt(i) == '\0') System.out.println("Aqui");
+        }
 
     }
 }

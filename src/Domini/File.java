@@ -8,15 +8,30 @@ package Domini;
 //
 
 
-public abstract class File {
-    private String name;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
-    public File(String name){
-        this.name = name;
+public class File extends java.io.File {
+
+    public File(String path){
+        super(path);
     }
+    public String getAbsPath(){return this.getAbsolutePath();}
+    public String getAbsName(){return this.getAbsPath().substring(0,getAbsolutePath().length()-4);}
 
-    public String getName(){return this.name;}
+    public String readFile(String fileName) throws IOException {
+        //InputStream is = new FileInputStream(fileName);
+        BufferedReader buf = new BufferedReader(new FileReader(fileName));
+        String line = buf.readLine();
+        StringBuilder sb = new StringBuilder();
+        while (line != null){
+            sb.append(line).append("\n");
+            line = buf.readLine();
+        }
 
-
+        String fileAsString = sb.toString();
+        return fileAsString;
+    }
 
 }

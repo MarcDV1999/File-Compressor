@@ -8,13 +8,19 @@ package Domini;
 //
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
-public class Folder {
+public class Folder extends Domini.File {
+    private List<File> files;
+    private int size;
 
     public Folder(String route) {
-        String actualFolder = System.getProperty(route);
-        File carpeta = new File(actualFolder);
-
-        System.out.println(carpeta.isDirectory()); // Imprimeix si es una carpeta o no
+        super(route);
+        files = Arrays.asList(this.listFiles());
+        size = files.size();
     }
+
+    public int getSize(){return size;}
+    public List<File> getFiles(){return files;}
 }

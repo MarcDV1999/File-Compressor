@@ -14,7 +14,7 @@ public class Ctrl_Domini {
 
 
     public void compressLZ78(String nom) throws IOException {
-        TextFile file = new TextFile(nom);
+        File file = new File(nom);
         lz78.compress(file);
     }
     public String disCompressLZ78(String nom) throws IOException {

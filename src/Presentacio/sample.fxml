@@ -89,6 +89,11 @@
                         <Font name="Futura Medium" size="12.0" />
                      </font>
                   </Label>
+                  <Button fx:id="selectFolder" layoutX="44.0" layoutY="168.0" mnemonicParsing="false" onMouseClicked="#onSelectFolderClicked" prefHeight="27.0" prefWidth="114.0" style="-fx-background-color: #5C93D6#5C93D6;" text="Seleccionar Carpeta" textFill="WHITE">
+                     <font>
+                        <Font name="Futura Medium" size="10.0" />
+                     </font>
+                  </Button>
                </children>
             </AnchorPane>
             <AnchorPane fx:id="statisticsPanel" layoutX="10.0" layoutY="95.0" prefHeight="260.0" prefWidth="519.0" visible="false">
