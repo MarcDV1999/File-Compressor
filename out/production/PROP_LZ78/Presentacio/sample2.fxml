@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="700.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Presentacio.Controller">
+    <children>
+        <AnchorPane fx:id="topPanel" prefHeight="93.0" prefWidth="427.0" style="-fx-background-color: #272343#272343;">
+            <children>
+                <HBox prefHeight="100.0" prefWidth="430.0">
+                    <children>
+                        <Separator prefHeight="100.0" prefWidth="126.0" visible="false" />
+                        <ImageView fitHeight="80.0" fitWidth="159.0" onMouseClicked="#onZipImageClicked" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@Images/imatgeFitxerAComprimir.png" />
+                            </image>
+                            <HBox.margin>
+                                <Insets left="10.0" top="10.0" />
+                            </HBox.margin>
+                        </ImageView>
+                        <Separator minWidth="-Infinity" prefHeight="101.0" prefWidth="135.0" visible="false" />
+                        <ImageView fitHeight="80.0" fitWidth="104.0" onMouseClicked="#onStatisticsImageClicked" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@Images/grafico-circular.png" />
+                            </image>
+                            <HBox.margin>
+                                <Insets right="10.0" top="10.0" />
+                            </HBox.margin>
+                        </ImageView>
+                        <Separator prefHeight="107.0" prefWidth="118.0" visible="false" />
+                    </children>
+                </HBox>
+            </children>
+        </AnchorPane>
+        <AnchorPane fx:id="statisticsPanel" layoutY="116.0" prefHeight="284.0" prefWidth="430.0" style="-fx-background-color: #272343#272343;" visible="false">
+            <children>
+                <Label layoutX="32.0" layoutY="26.0" text="Estadistiques" textFill="WHITE">
+                    <font>
+                        <Font name="Avenir Next Bold" size="48.0" />
+                    </font>
+                </Label>
+            </children></AnchorPane>
+        <AnchorPane fx:id="zipPanel" prefHeight="284.0" prefWidth="430.0" style="-fx-background-color: #272343#272343;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <children>
+                <Button fx:id="compressButton" layoutX="29.0" layoutY="117.0" mnemonicParsing="false" onMouseClicked="#onCompressButtonClicked" prefHeight="50.0" prefWidth="120.0" text="Comprimir" />
+                <Button fx:id="discompressButton" layoutX="29.0" layoutY="192.0" mnemonicParsing="false" onMouseClicked="#onDiscompressButtonClicked" prefHeight="50.0" prefWidth="120.0" text="Descomprimir" />
+                <Button fx:id="selectFile" layoutX="29.0" layoutY="47.0" mnemonicParsing="false" onMouseClicked="#onSelectFileClicked" text="Seleccionar Arxiu" />
+                <Button fx:id="visualizeButton" layoutX="167.0" layoutY="192.0" mnemonicParsing="false" onMouseClicked="#onVisualizeButtonClicked" prefHeight="50.0" prefWidth="120.0" text="Visualitzar Arxiu" />
+                <Label fx:id="fileNameLabel" layoutX="165.0" layoutY="47.0" prefHeight="27.0" prefWidth="243.0" textFill="WHITE">
+                    <font>
+                        <Font name="Avenir Next Bold" size="14.0" />
+                    </font>
+                </Label>
+                <TextArea fx:id="visualitzacioArxiu" layoutX="215.0" layoutY="17.0" prefHeight="164.0" prefWidth="200.0" />
+            </children>
+        </AnchorPane>
+        <ImageView fx:id="arrowZip" fitHeight="21.0" fitWidth="22.0" layoutX="100.0" layoutY="100.0" pickOnBounds="true" preserveRatio="true" rotate="-90.0" AnchorPane.leftAnchor="100.0" AnchorPane.topAnchor="100.0">
+            <image>
+                <Image url="@Images/boton-de-reproduccion.png" />
+            </image>
+        </ImageView>
+        <ImageView fx:id="arrowStatistics" fitHeight="21.0" fitWidth="22.0" layoutX="314.0" layoutY="99.0" pickOnBounds="true" preserveRatio="true" rotate="-90.0" visible="false">
+            <image>
+                <Image url="@Images/boton-de-reproduccion.png" />
+            </image>
+        </ImageView>
+    </children>
+</AnchorPane>

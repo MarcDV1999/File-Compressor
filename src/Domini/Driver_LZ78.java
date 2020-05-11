@@ -18,7 +18,7 @@ public class Driver_LZ78 {
         int fin = 1000; //por poner algo...
         String nomFitxer, nom;
         LZ78 lz78;
-        TextFile textfile;
+        File textfile;
         BinFile binFile;
         Scanner sc = new Scanner(System.in);
 
@@ -36,24 +36,23 @@ public class Driver_LZ78 {
                     System.out.println("----> Introdueixi el nom del Fitxer a comprimir (Exemple: Fitxer.txt): ");
                     try {
                         nomFitxer = sc.next();
-                        nom = nomFitxer.substring(0, nomFitxer.length() - 4);
-                        textfile = new TextFile(nom);
+                        textfile = new File(nomFitxer);
                         lz78 = new LZ78();
                         lz78.compress(textfile);
-                        System.out.println("Obre el Fitxer " + textfile.getTextFileName() + " per veure els canvis.");
+                        System.out.println("Obre el Fitxer " + textfile.getAbsName() + ".bin per veure els canvis.");
                     }catch (Exception e){
                         System.out.println("Nom de fitxer erroni, torni a intentar-ho");
                     }
                     break;
                 case 2:
-                    System.out.println("----> Introdueixi el nom del Fitxer a descomprimir (Exemple: Fitxer.txt): ");
+                    System.out.println("----> Introdueixi el nom del Fitxer a descomprimir (Exemple: Fitxer.bin2): ");
                     try {
                         nomFitxer = sc.next();
                         nom = nomFitxer.substring(0, nomFitxer.length() - 4);
                         binFile = new BinFile(nom);
                         lz78 = new LZ78();
                         lz78.discompress(binFile);
-                        System.out.println("Obre el Fitxer " + binFile.getBinFileName() + " per veure els canvis.");
+                        System.out.println("Obre el Fitxer " + binFile.getAbsName() + ".txt per veure els canvis.");
                     }catch (Exception e){
                         System.out.println("Nom de fitxer erroni, torni a intentar-ho");
                     }

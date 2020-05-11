@@ -22,10 +22,8 @@ public class Ctrl_BinFile extends BinFile {
         super(name);
     }
 
-
     // Lee el Fichero Comprimido binFile y retorna el texto decodificado en una lista de Strings
     public List<String> readBinFile() throws IOException {
-        //boolean[] ArrayHeader = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
         List<String> text = new ArrayList<>();
 
         FileInputStream in = new FileInputStream(binFileName);
@@ -38,61 +36,31 @@ public class Ctrl_BinFile extends BinFile {
 
         for (int i = 0; i < bitsHeader; i++)ArrayHeader.add(false);
         readBooleans(in,ArrayHeader);
-
         bitsPointer = getDecimalNumber(ArrayHeader);
-        //System.out.println("Bitspointer: " + ArrayHeader);
 
         // Inicializamos los Arrays
         for (int i = 0; i < bitsPointer; i++)ArrayPointer.add(false);
         for (int i = 0; i < bitsUltimoChar; i++)ArrayUltimoChar.add(false);
         for (int i = 0; i < 8; i++)b.add(false);
 
-
-
-        //System.out.println("Array Pointer: " + ArrayPointer);
-        //printBoolean(ArrayHeader);
-
-        //System.out.println("BIts: " + bitsPointer);
-
-        //System.out.println("hey3");
         // Mientras haya texto por leer vamos cogiendo bits, vamos decodificando y guardando en text
         while (!readBooleans(in, b)){
-            //System.out.println("hey4");
             for (Boolean aBoolean : b) {
-                //System.out.println("hey5");
                 try {
-                    //System.out.println("\tProceso: " + aBoolean);
-                    //System.out.println("\tProceso: ");
-                    //System.out.println("hey10");
                     if (ultimPointer == bitsPointer && ultimChar == bitsUltimoChar) {
-                        //System.out.println("Guardamos en Text");
-                        //System.out.println("hey7");
                         int d1 = getDecimalNumber(ArrayPointer), d2 = getDecimalNumber(ArrayUltimoChar);
-                        //char s = (char)d2;
-                        //text += d1; text += s;
+
                         Character s = (char) d2;
-                        //text.add(new Pair<Integer, Character>(d1,s));
                         text.add(String.valueOf(d1));
                         text.add(String.valueOf(s));
-                        //System.out.println("Pointer: " + ArrayPointer + " --> " + obtenerDecimal(ArrayPointer));
-                        //System.out.println("UltimoChar: " + ArrayUltimoChar + " --> " + obtenerDecimal(ArrayUltimoChar).toString());
-                        //System.out.println("-------------------------");
                         ultimPointer = ultimChar = 0;
                     }
                     if (ultimPointer < bitsPointer) {
-                        //System.out.println("hey8");
-                        //System.out.println("\t\tPointer: " + ArrayPointer);
                         ArrayPointer.set(ultimPointer, aBoolean);
-                        //System.out.println("hey9");
                         ultimPointer++;
-                        //System.out.println("\t\t\tArrayPointer: " + ArrayPointer);
                     } else if (ultimChar < bitsUltimoChar) {
-                        //System.out.println("hey11");
-                        //System.out.println("\t\tUltimChar: " + b.get(i));
                         ArrayUltimoChar.set(ultimChar, aBoolean);
-                        //System.out.println("hey12");
                         ultimChar++;
-                        // System.out.println("\t\t\tArrayChar: " + ArrayUltimoChar);
                     }
                 } catch (Exception e) {
                     System.out.println("Algo ha ido mal: " + e);
@@ -100,21 +68,12 @@ public class Ctrl_BinFile extends BinFile {
             }
         }
         // Vuelvo a poner el if por si los arrays no estan vacios, si no lo pongo podria desaparecer el ultimo caracter
-        //System.out.println("UltimPointer: " + ultimPointer + " ultimChar: " + ultimChar);
         if(ultimPointer > 0 && ultimChar > 0){
             readBooleans(in, b);readBooleans(in, b);
             int d1 = getDecimalNumber(ArrayPointer) ,d2 = getDecimalNumber(ArrayUltimoChar);
             Character s = (char)d2;
-            //System.out.println("d1: " + d1 + "," + s);
             text.add(String.valueOf(d1));text.add(String.valueOf(s));
-            //System.out.println("Pointer: " + ArrayPointer + " --> " + obtenerDecimal(ArrayPointer));
-            //System.out.println("UltimoChar: " + ArrayUltimoChar + " --> " + obtenerDecimal(ArrayUltimoChar).toString());
         }
-
-        //System.out.println("Pointer:::::: " + ArrayPointer + " --> " + obtenerDecimal(ArrayPointer));
-        //System.out.println("UltimoChar::::::: " + ArrayUltimoChar + " --> " + obtenerDecimal(ArrayUltimoChar).toString());
-        //System.out.println("Texto Decodificado: " + text);
-        //System.out.println("The file size was " + new File(writeFileName).length()+" bytes.");
         in.close();
 
         return text;
@@ -201,6 +160,11 @@ public class Ctrl_BinFile extends BinFile {
         }
 
         writeBooleans(out, arrayToWrite);
+    }
+
+    public double getSize(){
+        File b = new File(this.getAbsolutePath()+".bin");
+        return b.length();
     }
 
 }

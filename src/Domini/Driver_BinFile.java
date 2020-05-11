@@ -19,7 +19,8 @@ public class Driver_BinFile{
         while (estado != fin) {
             System.out.println("Driver BinFile:");
             System.out.println("\t1. Consultar nom del fitxer amb extensió");
-            System.out.println("\t2. Exit");
+            System.out.println("\t2. Consultar mida del fitxer");
+            System.out.println("\t3. Exit");
             System.out.println("Introdueixi un numero: ");
             estado = sc.nextInt();
 
@@ -37,7 +38,19 @@ public class Driver_BinFile{
                     }
                     break;
                 case 2:
-                    fin = 2;
+                    System.out.println("----> Introdueixi el nom del Fitxer (Exemple: Fitxer.bin): ");
+                    try {
+                        nomFitxer = sc.next();
+                        nom = nomFitxer.substring(0, nomFitxer.length() - 4);
+                        binFile = new BinFile(nom);
+                        System.out.println("Mida del fitxer: " + binFile.getSize() + " Bytes.");
+                    }
+                    catch (Exception e){
+                        System.out.println("Nom de fitxer erroni, torni a intentar-ho");
+                    }
+                    break;
+                case 3:
+                    fin = 3;
                     System.out.println("Gràcies. Passi-ho bé.");
                     break;
 

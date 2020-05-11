@@ -20,7 +20,6 @@ public class BinFile extends File {
         this.binFileName = name + ".bin";
     }
 
-
     //Escribe un Array de Booleans en formato bits en el fichero Binario(Comprimido)
     protected void writeBooleans(OutputStream out, ArrayList<Boolean> ar) throws IOException {
         for (int i = 0; i < ar.size(); i += 8) {
@@ -87,6 +86,7 @@ public class BinFile extends File {
     // Consulta el nombre del Fichero Binario.
     public String getBinFileName(){return binFileName;}
 
+    // Retorna la mida del fitxer.
     public double getSize(){
         java.io.File f = new java.io.File(binFileName);
         return f.length(); // bytes

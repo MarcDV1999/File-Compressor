@@ -25,9 +25,8 @@ public class Driver_CompressedFile {
                     try {
                         System.out.println("----> Introdueixi el nom del Fitxer (Exemple: Fitxer.txt): ");
                         nomFitxer = sc.next();
-                        nom = nomFitxer.substring(0, nomFitxer.length() - 4);
-                        TextFile t = new TextFile(nom);
-                        lzss = new LZSS(nom);
+                        File t = new File(nomFitxer);
+                        lzss = new LZSS();
                         file = lzss.codify(t);
                         System.out.println("Resultat: " + file.getResultat());
                     }
@@ -36,22 +35,30 @@ public class Driver_CompressedFile {
                     }
                     break;
                 case 2:
-                    System.out.println("----> Introdueixi el nom del Fitxer (Exemple: Fitxer.txt): ");
-                    nomFitxer = sc.next();
-                    nom = nomFitxer.substring(0, nomFitxer.length() - 4);
-                    TextFile t = new TextFile(nom);
-                    lzss = new LZSS(nom);
-                    file = lzss.codify(t);
-                    System.out.println("Chars Codificats: " + file.getCharscodificats());
+                    try {
+                        System.out.println("----> Introdueixi el nom del Fitxer (Exemple: Fitxer.txt): ");
+                        nomFitxer = sc.next();
+                        File t = new File(nomFitxer);
+                        lzss = new LZSS();
+                        file = lzss.codify(t);
+                        System.out.println("CharsCodificats: " + file.getCharscodificats());
+                    }
+                    catch (Exception e){
+                        System.out.println("Nom de fitxer erroni, torni a intentar-ho");
+                    }
                     break;
                 case 3:
-                    System.out.println("----> Introdueixi el nom del Fitxer (Exemple: Fitxer.txt): ");
-                    nomFitxer = sc.next();
-                    nom = nomFitxer.substring(0, nomFitxer.length() - 4);
-                    TextFile t1 = new TextFile(nom);
-                    lzss = new LZSS(nom);
-                    file = lzss.codify(t1);
-                    System.out.println("Bytes Finals: " + file.getBytesfinals());
+                    try {
+                        System.out.println("----> Introdueixi el nom del Fitxer (Exemple: Fitxer.txt): ");
+                        nomFitxer = sc.next();
+                        File t = new File(nomFitxer);
+                        lzss = new LZSS();
+                        file = lzss.codify(t);
+                        System.out.println("Bytes Finals: " + file.getBytesfinals());
+                    }
+                    catch (Exception e){
+                        System.out.println("Nom de fitxer erroni, torni a intentar-ho");
+                    }
                     break;
                 case 4:
                     fin = 4;

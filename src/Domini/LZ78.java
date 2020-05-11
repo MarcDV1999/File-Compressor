@@ -22,143 +22,135 @@ class LZ78 {
     private HashMap<String, Triplet<Integer,Integer,Character>> code = new HashMap<> ();
     private HashMap<Integer, Triplet<String,Integer,Character>> decode = new HashMap<> ();
     private static Ctrl_BinFile binFile;
-    private static TextFile textFile;
     private int numFrases = 0;
     private long executionTimeIni,executionTimeEnd, executionTime= System.currentTimeMillis();
-    private String new_extension = "_new";
     private Set_Statistics statistics;
-    private Folder folder;
-    private String rootPath;
 
     public LZ78(){statistics = new Set_Statistics();}
 
     //Comprime en formato LZ78 en el Archivo con Nombre: name (sin el formato).
     public void compress(File file) throws IOException { // Toca intentar comprimir en un fitxer tots els fitxer. Pero un ja el fa be
         String nameToSave = "";
+        Ctrl_BinFile bin;
         executionTimeIni = System.currentTimeMillis();
 
         List textCodifiedASCII = new ArrayList();
-        //textCodifiedASCII.addAll(codify(file));
+        nameToSave = file.getAbsName();
+        bin = new Ctrl_BinFile(nameToSave);
         if(!file.isDirectory()) {
-            textCodifiedASCII.addAll(codify(file)); // Afegim el Text amb el header(Path + text + \0)
+            textCodifiedASCII.addAll(codify(file, true)); // Afegim el Text amb el header(Path + text + \0)
             nameToSave = file.getAbsName();
+            binFile = new Ctrl_BinFile(nameToSave);
+            binFile.writeBinFile(textCodifiedASCII, numFrases);
+
+            executionTimeEnd = System.currentTimeMillis();
+            executionTime = executionTimeEnd - executionTimeIni; // ms
+            statistics.addCompressLZ78(new Statistic(executionTime, file.length(), binFile.getSize()));
         }
         else {
-            textCodifiedASCII.addAll(codify(file));
-            //System.out.println("Detecto la Carpeta: " + file.getName() + " y Voy a compressFolder");
+            textCodifiedASCII.addAll(codify(file, false));
             compressFolder(new Folder(file.getAbsolutePath()),textCodifiedASCII);
             nameToSave = file.getAbsolutePath();
+            binFile = new Ctrl_BinFile(nameToSave);
+
+            binFile.writeBinFile(textCodifiedASCII, numFrases);
+            Folder folder = new Folder(file.getAbsolutePath());
+            executionTimeEnd = System.currentTimeMillis();
+            executionTime = executionTimeEnd - executionTimeIni; // ms
+            statistics.addCompressLZ78(new Statistic(executionTime, folder.getSize(), binFile.getSize()));
         }
-        System.out.println("Nombre con el que guardo el bin: " + file.getAbsName());
-        binFile = new Ctrl_BinFile(nameToSave);
 
-        binFile.writeBinFile(textCodifiedASCII, numFrases);
-
-        executionTimeEnd = System.currentTimeMillis();
-        executionTime = executionTimeEnd - executionTimeIni; // ms
-        Statistic s = new Statistic(executionTime,file.length(), binFile.getSize());
-        statistics.addCompressLZ78(s);
-        //System.out.println("EIni: " + executionTimeIni + " - ExecutionTimeEnd: " + executionTimeEnd);
-        //System.out.println("Texto Codificado:\t" + textCodifiedASCII);
     }
 
-    public List compressFolder(Folder folder, List textCodifiedASCII) throws IOException { // Toca intentar comprimir en un fitxer tots els fitxer. Pero un ja el fa be
-       java.io.File file = new File(folder.getAbsolutePath());
-        System.out.println("1.Carpeta: " + folder.getAbsolutePath());
-        if(folder.getSize() == 0) {
-            System.out.println("\t2. Carpeta Vacia:");
-            textCodifiedASCII.addAll(codify(new File(folder.getAbsolutePath()))); // Afegim el Text amb el header(Path + text + \0)
-        }else {
-            System.out.println("\t2. Mirem Elements Carpeta:");
-            for (int i = 0; i < folder.getSize(); i++) {
-                file = folder.getFiles().get(i);
-                String actualAbsPath = file.getAbsolutePath();
-                System.out.println("\t\t3. Mirem: " + actualAbsPath);
-                //System.out.println("Archivo: " + file.getAbsolutePath());
-                if (file.isDirectory()) {
-                    System.out.println("\t\t\t4. Es una carpeta");
-                    textCodifiedASCII.addAll(compressFolder(new Folder(actualAbsPath), textCodifiedASCII));
-                } else {
-                    //f_domini = new File(file.getAbsolutePath().substring(0, file.getAbsolutePath().length() - 4));
-                    System.out.println("\t\t\t4. Es un arxiu");
-                    //System.out.println("----> " + actualAbsPath.substring(actualAbsPath.length()-4));
-                    if(actualAbsPath.substring(actualAbsPath.length()-4).equals(".txt")){
-                        System.out.println("\t\t\t\t5. Codifiquem" + actualAbsPath);
-                        textCodifiedASCII.addAll(codify(new File(actualAbsPath)));
-                    }
-                    else{ System.out.println("\t\t\t\t5. No es un arxiu valid" + actualAbsPath);}
 
+    //Descomprime en formato LZ78 en el Archivo con Nombre: name (sin el formato).
+    public void discompress(BinFile bin) throws IOException{
+        String fileContentAndPath,pathNewFile, newFileContent, root;
+        Integer endOfNextFile;
+        executionTimeIni = System.currentTimeMillis();
+        binFile = new Ctrl_BinFile(bin.getAbsolutePath());
+        File f = new File(bin.getAbsolutePath()), parent;
+        Folder folder;
+        pathNewFile = f.getAbsolutePath()+".txt";
+        root = f.getAbsolutePath();
+        List allInfo = binFile.readBinFile();
+        Pair<String, Integer> p;
+        try {
+            while (allInfo.size()>0) {
+                p = deCodify(allInfo);
+                fileContentAndPath = p.getValue0();
+                endOfNextFile = p.getValue1();
+
+                String result = tractarHeader(fileContentAndPath);
+                if(!result.equals("")) pathNewFile = result;
+                allInfo = allInfo.subList(endOfNextFile+1, allInfo.size());
+                f = new File(pathNewFile);
+                parent = new File(f.getParent());
+
+                if(pathNewFile.endsWith(".txt")){
+                    try {
+                        newFileContent = fileContentAndPath.substring(pathNewFile.length() + 1, fileContentAndPath.length() - 1);
+                        if (!parent.exists()) createFoldersNonExistent(parent);
+                        f.writeFile(pathNewFile, newFileContent);
+                    }catch (Exception e){System.out.println("Error a discompress LZ78");}
                 }
-                //System.out.println("Text queda: " + textCodifiedASCII);
+                else {
+                    f = new File(pathNewFile);
+                    f.mkdir();
+                }
+            }
+
+            executionTimeEnd = System.currentTimeMillis();
+            executionTime = executionTimeEnd - executionTimeIni; // ms
+            f = new File(root);
+            //System.out.println("root: " + root);
+            if(f.isDirectory()) {
+                folder = new Folder(f.getAbsolutePath());
+                statistics.addDiscompressLZ78(new Statistic(executionTime, bin.getSize(), folder.getSize()));
+            }
+            else {
+                f = new File(root+".txt");
+                //System.out.println("bin: " + bin.getSize() + "f: " + f.length());
+                statistics.addDiscompressLZ78(new Statistic(executionTime, bin.getSize(), f.length()));
+            }
+
+
+
+
+        }catch (Exception e){
+            System.out.println("Discompress LZ78 diu: Error al intentar decodificar el seguent fitxer\n" + e);
+        }
+    }
+
+    // Retorna el conjunto de estadisticas del algoritmo.
+    public Set_Statistics getStatistics(){return statistics;}
+
+
+    //Comprime en formato LZ78 una carpeta.
+    private List compressFolder(Folder folder, List textCodifiedASCII) { // Toca intentar comprimir en un fitxer tots els fitxer. Pero un ja el fa be
+        java.io.File file;
+        if(folder.getSize() == 0) {
+            textCodifiedASCII.addAll(codify(new File(folder.getAbsolutePath()), false)); // Afegim el Text amb el header(Path + text + \0)
+        }else {
+            for (int i = 0; i < folder.getSize(); i++) {
+                try {
+                    file = folder.getFiles().get(i);
+                    String actualAbsPath = file.getAbsolutePath();
+                    if (file.isDirectory()) {
+                        compressFolder(new Folder(actualAbsPath), textCodifiedASCII);
+                    } else {
+                        if (actualAbsPath.substring(actualAbsPath.length() - 4).equals(".txt"))
+                            textCodifiedASCII.addAll(codify(new File(actualAbsPath), false));
+                        else System.out.println("\t\t\t\t5. No es un arxiu valid" + actualAbsPath);
+                    }
+                }catch (Exception e){}
             }
         }
         return textCodifiedASCII;
     }
 
-    //Descomprime en formato LZ78 en el Archivo con Nombre: name (sin el formato).
-    public void discompress(BinFile bin) throws IOException{
-        String textDecodified;
-        executionTimeIni = System.currentTimeMillis();
-        //String decompressedFileName = bin.getAbsolutePath() + new_extension;
-        textFile = new TextFile(bin.getAbsolutePath());
-        binFile = new Ctrl_BinFile(bin.getAbsolutePath());
-        File f, parent;
 
-        List textCodifiedASCII = binFile.readBinFile();
-        //System.out.println("list: " + textCodifiedASCII);
-        Pair<String, Integer> p = new Pair<>("",1);
-        //System.out.println("Text sencer: " + textCodifiedASCII);
-        try {
-            while (textCodifiedASCII.size()>0) {
-                p = deCodify(textCodifiedASCII);
-                textDecodified = p.getValue0();
-                textCodifiedASCII = textCodifiedASCII.subList(p.getValue1()+1, textCodifiedASCII.size());
-
-                String pathToSave = tractarHeader(textDecodified);
-                //System.out.println("Guardem arxiu a: " + pathToSave);
-                f = new File(pathToSave);
-                parent = new File(f.getParent());
-                if(pathToSave.endsWith(".txt")){
-                    textDecodified = textDecodified.substring(pathToSave.length() + 1, textDecodified.length() - 1);
-
-                    //pathToSave = pathToSave.substring(0,pathToSave.length()-4);
-
-                    if(!parent.exists()){
-                        createFoldersNonExistent(parent);
-                    }
-                    textFile.writeFile(pathToSave, textDecodified);
-                }
-                else {
-
-                    f = new File(pathToSave);
-                    //System.out.println("Tinc una carpeta, la creem");
-                    System.out.println("Creem la carpeta: " + pathToSave);
-                    f.mkdir();
-                }
-                //System.out.println("textDecodified: " + textDecodified);
-                //System.out.println("Save as: " + pathToSave + new_extension);
-
-                /*
-                if(pathToSave.substring(pathToSave.length()-4).equals(".txt"))textFile.writeFile(pathToSave + new_extension, textDecodified);
-                else {
-                    File folder = new File(pathToSave);
-                    folder.mkdir();
-                }
-                 */
-
-
-                /*
-                executionTimeEnd = System.currentTimeMillis();
-                executionTime = executionTimeEnd - executionTimeIni; // ms
-                Statistic s = new Statistic(executionTime, bin.getSize(), textFile.length());
-                statistics.addDiscompressLZ78(s);
-                //statistics.addDiscompressLZ78(new Statistic(-3,-4,-5));
-                 */
-            }
-        }catch (Exception e){
-            System.out.println("Discompress LZ78 diu: Error al intentar decodificar el seguent fitxer\n" + e);
-        }
-    }
+    // Genera todas las carpetas necessarias para descomprimir el archivo parent.
     private void createFoldersNonExistent(File parent){
         File grandpa = new File(parent.getParent());
         while (!parent.exists()){
@@ -167,20 +159,20 @@ class LZ78 {
         }
     }
 
+    // Coge del fichero y encuentra si lo tiene un header con el nombre del fichero
     private String tractarHeader(String textDecodified){
         String newText = "";
         for (int i = 0; i < textDecodified.length(); i++){
-            if(textDecodified.charAt(i) == ' ') { return newText; }
+            if(textDecodified.charAt(i) == '\1') { return newText; }
             else newText += textDecodified.charAt(i);
         }
-
         System.out.println("Error al detectar el path al Header del arxiu");
         return "";
     }
 
 
     // Retorna una Lista de Tuplas(Pointer, UltimoChar) en ASCII.
-    private List codify(File file) {
+    private List codify(File file, boolean compressingOnlyThisFile) {
         /*  Pre: text no ha de ser vacio, sino salta una Excepcion
             Post: Llena la HashTable con las frases frequentes en formato LZ78 con la estructura siguiente:
 
@@ -192,20 +184,29 @@ class LZ78 {
         List textCodifiedASCII = new ArrayList();
         String text = "", textWithoutHeader = "";
         if(file.isDirectory()){
-            text = file.getAbsolutePath() + " \0";
-            System.out.println("Codifico carpeta");
+            text = file.getAbsolutePath() + "\1\0";
         }
-        else {
-            System.out.println("Afegeixo: " + file.getAbsolutePath());
+        else{
             try {
                 textWithoutHeader = file.readFile(file.getAbsolutePath());
-                text = file.getAbsolutePath() + " " + textWithoutHeader + '\0';
-                //System.out.println("Afegeixo: " + textCodifiedASCII);
-            }catch (IOException e){ System.out.println("No he pogut Codificar el arxiu: " + textFile.getTextFileName());}
+                text = file.getAbsolutePath() + '\1' + textWithoutHeader + '\0';
+            }catch (IOException e){ System.out.println("No he pogut Codificar el arxiu: " + file.getAbsolutePath());}
         }
+       /*
+        else if(!compressingOnlyThisFile){
+            try {
+                textWithoutHeader = file.readFile(file.getAbsolutePath());
+                text = file.getAbsolutePath() + '\1' + textWithoutHeader + '\0';
+            }catch (IOException e){ System.out.println("No he pogut Codificar el arxiu: " + file.getAbsolutePath());}
+        }
+        else{
+            try {
+                textWithoutHeader = file.readFile(file.getAbsolutePath());
+                text = '\1' + textWithoutHeader + '\0';
+            }catch (IOException e){ System.out.println("No he pogut Codificar el arxiu: " + file.getAbsolutePath());}
+        }
+*/
 
-            //textFile = new TextFile(file.getAbsolutePath());
-            System.out.println("Codify dice: Intento acceder al archivo (" + file.getAbsPath() + ")");
             try {
                 code.clear();
                 Integer contadorID = 1; //Se usa para ir asignando ID a las distintas frases en la HashTable
@@ -233,19 +234,15 @@ class LZ78 {
                         frase = Character.toString(text.charAt(i)); // Inicialitzem la primera frase amb el primer char del text
                     }
                     // Si ya lo tenia sigo buscando
-                    else
-                        frase += Character.toString(text.charAt(i)); // Inicialitzem la primera frase amb el primer char del text
+                    else frase += Character.toString(text.charAt(i)); // Inicialitzem la primera frase amb el primer char del text
 
                 }
                 // Ejecutamos esto por si la ultima frase de text era una frase a guardar
                 if (!code.containsKey(frase)) {
-                    //System.out.println("AQUI ");
                     if (frase.length() > 0) {
-                        //System.out.println("\tFrase llarga: " + frase);
                         Integer v1 = code.get(frase.substring(0, frase.length() - 1)).getValue0(); // Quitamos el ultimo char a la frase para buscar en la HashTable
                         tripleta = new Triplet(contadorID++, v1, frase.charAt(frase.length() - 1));
                     } else tripleta = new Triplet(contadorID++, 0, frase.charAt(0));
-                    //System.out.println("\tFrase llarga: " + frase);
                     code.put(frase, tripleta);
                     textCodifiedASCII.add(tripleta.getValue1().toString());
                     textCodifiedASCII.add(tripleta.getValue2().toString());
@@ -256,11 +253,9 @@ class LZ78 {
                     textCodifiedASCII.add(tripleta.getValue1().toString());
                     textCodifiedASCII.add(tripleta.getValue2().toString());
                 }
-                //System.out.println("\tFrase llarga1: " + frase);
                 numFrases = --contadorID;
 
-            } catch (Exception e) {
-                System.out.println("Ha habido un Error al intentar Codificar el texto. Revise que el documento no este vacio.");
+            } catch (Exception e) { System.out.println("Ha habido un Error al intentar Codificar el texto. Revise que el documento no este vacio.");
             }
 
         return textCodifiedASCII;
@@ -274,39 +269,33 @@ class LZ78 {
         String textDescompressed = "", ultimoChar = "", frase = "";
         int contadorID = 1, pointer;
 
-
         decode.put(0, new Triplet("", 0, '?')); // Agregamos el elemento 0 en la HashTable
-        //System.out.println("textCompressedASCII: " + textCompressedASCII);
-
+        executionTimeIni = System.currentTimeMillis();
         for (int i = 0; i < textCompressedASCII.size(); i+=2){
+
             pointer = Integer.valueOf(textCompressedASCII.get(i).toString());
             ultimoChar = textCompressedASCII.get(i+1).toString();
-            if(textCompressedASCII.get(i+1).toString().charAt(0) == '\0') {
-               // System.out.println("------TextDescompressed: " + textDescompressed);
+            if(ultimoChar.charAt(0) == '\0') {
                 return new Pair<>(textDescompressed,i+1);
             }
             if(pointer == 0) {
-                //System.out.println("\tEs 0, Añadimos la letra " + ultimoChar);
-                executionTimeIni = System.currentTimeMillis();
                 decode.put(contadorID++, new Triplet<String, Integer, Character>(ultimoChar, pointer, ultimoChar.charAt(0)));
-                executionTimeEnd = System.currentTimeMillis() - executionTimeIni;
                 textDescompressed += ultimoChar.charAt(0);
             }
             else{
-
                 frase = decode.get(pointer).getValue0();
-                //System.out.println("\tEs FRASE, Añadimos la letra " + frase + ultimoChar);
                 decode.put(contadorID++, new Triplet<String, Integer, Character>(frase + ultimoChar, pointer, ultimoChar.charAt(0)));
                 textDescompressed += frase + ultimoChar;
             }
-
+            if(i%100 == 0){
+                executionTimeEnd = System.currentTimeMillis() - executionTimeIni;
+                executionTimeIni = System.currentTimeMillis();
+            }
         }
-        return new Pair(textDescompressed,-1);
+        return new Pair(textDescompressed,-2);
     }
 
-    public String getNew_extension(){return new_extension;}
 
-    public Set_Statistics getStatistics(){return statistics;}
 
 }
 

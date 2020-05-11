@@ -4,33 +4,32 @@ import java.io.*;
 import java.util.*;
 
 public class LZSS{
+    private long executionTimeIni,executionTimeEnd, executionTime= System.currentTimeMillis();
+    private Set_Statistics statistics;
 
 //Utilitzarem 1 flag per a marcar si trobem el següent símbol al nostre HashMap o no.
-//If no match found, submit/store only next symbol.
-//Otherwise submit/store the length and offset but not the next symbol
+// Si no trobem el següent simbol, aleshores guarden nomes el següent.
+// si el trobem, guardem la mida i el offset pero no el següent simbol
 
-    //  private String writeFileName = "FitxerComprimit.bin";
-    // private BufferedWriter writer;
+    public LZSS(){statistics = new Set_Statistics();}
 
-    public LZSS(String name) {
+    public CompressedFile compress(File file) throws IOException{
+        executionTimeIni = System.currentTimeMillis();
 
-        //  this.writer = new BufferedWriter(new FileWriter(name));
-    }
-
-
-
-    public CompressedFile compress(TextFile file) throws IOException{
         CompressedFile text = codify(file);
         String resultat = text.getResultat().toString();
-        String nameCompressedFile = file.getName() + "Compressed.txt";
+        String nameCompressedFile = file.getAbsName() + "Compressed.txt";
         file.writeFile(nameCompressedFile, resultat);
-        //   BinFile binFile = new BinFile(file.getName());
-        // binFile.writeBinFile(text,binFile.getBinFileName());
+
+        executionTimeEnd = System.currentTimeMillis();
+        executionTime = executionTimeEnd - executionTimeIni; // ms
+        File newFile = new File(nameCompressedFile);
+        statistics.addCompressLZSS(new Statistic(executionTime, file.length(), newFile.length()));
         return text;
     }
 
-    public CompressedFile codify(TextFile file) throws IOException{
-        String text = file.readFile(file.getTextFileName());
+    public CompressedFile codify(File file) throws IOException{
+        String text = file.readFile(file.getAbsolutePath());
         HashMap<Character, List<Integer>> code = new HashMap <Character, List<Integer>>();
         int n = text.length();
         BitSet match = new BitSet();
@@ -88,17 +87,12 @@ public class LZSS{
         catch (Exception e) {
         }
 
-        return new CompressedFile(file.getName(),out,size,match);
-
-
-
-
+        return new CompressedFile(file.getAbsolutePath(),out,size,match);
     }
 
     public void decodify(CompressedFile text ) throws IOException{
 
-        TextFile textdescomprimit = new TextFile("textdescomprimit");
-        int index = 0;
+        File textdescomprimit = new File(text.getAbsolutePath());
         StringBuffer output = new StringBuffer();
         int n = text.getBytesfinals();
         List textocodificado = text.getResultat();
@@ -109,8 +103,8 @@ public class LZSS{
             if(text.getCharscodificats().get(i)){
 
                 //   if(inici) {
-                int start = (int)textocodificado.get(iteradortexto);
-                int offset = (int)textocodificado.get(iteradortexto+1);
+                int start = Integer.valueOf(textocodificado.get(iteradortexto).toString());
+                int offset = Integer.valueOf(textocodificado.get(iteradortexto+1).toString());
                 for(int j = 0; j < offset; ++j){
                     output.append(output.charAt(start++));
                 }
@@ -123,8 +117,14 @@ public class LZSS{
 
             ++iteradortexto;
         }
-        String descompressedFileName = text.getName() + "Descompressed.txt";
-        textdescomprimit.writeFile(descompressedFileName,output.toString());
+        String descompressedFileName = textdescomprimit.getAbsName();
+        String textNou = output.toString();
+        System.out.println("- " + descompressedFileName);
+        textdescomprimit.writeFile(descompressedFileName + "_new.txt",textNou);
+
+        executionTimeEnd = System.currentTimeMillis();
+        executionTime = executionTimeEnd - executionTimeIni; // ms
+        statistics.addDiscompressLZSS(new Statistic(executionTime, text.length(), textdescomprimit.length()));
     }
 
 
@@ -139,6 +139,6 @@ public class LZSS{
     }
 
 
-
-
+    // Retorna el conjunto de estadisticas del algoritmo.
+    public Set_Statistics getStatistics(){return statistics;}
 }

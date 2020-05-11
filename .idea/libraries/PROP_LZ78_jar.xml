@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="PROP_LZ78_jar">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/out/artifacts/PROP_LZ78_jar/PROP_LZ78.jar!/" />
+      <root url="jar://$PROJECT_DIR$/out/artifacts/PROP_LZ78_jar/PROP_Grup5.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

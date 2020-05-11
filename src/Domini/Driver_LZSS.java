@@ -8,7 +8,7 @@ public class Driver_LZSS {
         int fin = 1000; //por poner algo...
         String nomFitxer, nom;
         LZSS lzss;
-        TextFile textfile;
+        File textfile;
         CompressedFile cf;
         Scanner sc = new Scanner(System.in);
 
@@ -27,10 +27,10 @@ public class Driver_LZSS {
                     try {
                         nomFitxer = sc.next();
                         nom = nomFitxer.substring(0, nomFitxer.length() - 4);
-                        textfile = new TextFile(nom);
-                        lzss = new LZSS(nom);
+                        textfile = new File(nomFitxer);
+                        lzss = new LZSS();
                         lzss.compress(textfile);
-                        System.out.println("Obre el Fitxer " + textfile.getTextFileName() + " per veure els canvis.");
+                        System.out.println("Obre el Fitxer " + textfile.getAbsName() + "Compressed.txt per veure els canvis.");
                     }catch (Exception e){
                         System.out.println("Nom de fitxer erroni, torni a intentar-ho");
                     }
@@ -39,9 +39,8 @@ public class Driver_LZSS {
                     System.out.println("----> Introdueixi el nom del Fitxer a decodificar (Exemple: Fitxer.txt): ");
                     try {
                         nomFitxer = sc.next();
-                        nom = nomFitxer.substring(0, nomFitxer.length() - 4);
-                        textfile = new TextFile(nom);
-                        lzss = new LZSS(nom);
+                        textfile = new File(nomFitxer);
+                        lzss = new LZSS();
                         CompressedFile c = lzss.compress(textfile);
                         lzss.decodify(c);
                         System.out.println("Resultat: " + c.getResultat());
@@ -54,9 +53,8 @@ public class Driver_LZSS {
                     System.out.println("----> Introdueixi el nom del Fitxer a Codificar (Exemple: Fitxer.txt): ");
                     try {
                         nomFitxer = sc.next();
-                        nom = nomFitxer.substring(0, nomFitxer.length() - 4);
-                        textfile = new TextFile(nom);
-                        lzss = new LZSS(nom);
+                        textfile = new File(nomFitxer);
+                        lzss = new LZSS();
                         CompressedFile c = lzss.compress(textfile);
                         lzss.decodify(c);
 
@@ -71,6 +69,7 @@ public class Driver_LZSS {
                     System.out.println("Gràcies. Passi-ho bé.");
                     break;
             }
+            System.out.println("Els canvis no es veuran reflexats fins que no es reinicii el programa");
         }
     }
 }

@@ -34,7 +34,6 @@ package Domini;
  */
 
 import java.io.IOException;
-import java.io.File;
 
 
 public class Main {
@@ -42,16 +41,18 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         String name = "fitxer";
-        //String s = "ABABCBABABAAA";
-        String route = "/Users/marcdomenech/Desktop/PROP_LZ78/src/c";
+        String route = "/Users/marcdomenech/Desktop/c/u";
+/*
+        File f = new File(route);
+        LZSS lzss = new LZSS();
+        CompressedFile c = lzss.compress(f);
+        lzss.decodify(c);
 
+ */
 
-        Folder f = new Folder(route);
-        //System.out.println("Parent: " + f.getParent());
-        String s = "Hola MArc" + '\0' + " soy yo";
-        for(int i = 0; i< s.length() ;i++){
-            if(s.charAt(i) == '\0') System.out.println("Aqui");
-        }
+        Ctrl_Domini d = new Ctrl_Domini();
+        d.compressLZSS(route);
+        d.disCompressLZSS(route);
 
     }
 }
